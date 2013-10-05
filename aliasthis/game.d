@@ -20,11 +20,11 @@ public:
         while(true)
         {
             // redraw all
-            for (int i = 1; i < _console.width; ++i)
-                for (int j = 1; j < _console.height; ++j)
+            for (int i = 0; i < _console.width; i += 10)
+                for (int j = 0; j < _console.height; ++j)
                 {
                     _console.setBackgroundColor(TCOD_color_t((j * -47 + i * 7) & 255, (i*j +78 * 4241) & 255, 255 & (i ^ j) ));
-                    _console.putChar(i, j, ' ', TCOD_BKGND_SET);
+                    _console.print(i, j, "héllo çruel wörld", TCOD_BKGND_SET);
                 }
 
             _console.flush();    

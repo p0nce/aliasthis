@@ -57,9 +57,15 @@ public:
         TCOD_console_put_char(_handle, x, y, c, flag);
     }
 
-    void print(int x, int y, const(char)* text)
+    void print(int x, int y, string text, TCOD_bkgnd_flag_t flag)
     {
-        TCOD_console_print(_handle, x, y, text);
+        // handle UTF-8
+        int i = 0;
+        foreach(dchar d; text)
+        {
+            TCOD_console_put_char(_handle, x + i, y, d, flag);
+            ++i;
+        }
     }
 
     @property int width()
