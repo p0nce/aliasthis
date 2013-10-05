@@ -1,6 +1,6 @@
 {
-    "name": "drogue",
-    "targetName": "drogue",
+    "name": "aliasthis",
+    "targetName": "aliasthis",
     "targetType": "executable",
     "sourcePath": ".",
     "importPaths": [ "."],
