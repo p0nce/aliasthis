@@ -19,51 +19,59 @@ public:
         bool finished = false;
         while(true)
         {
-            TCOD_key_t key;
-            TCOD_mouse_t mouse;
-            TCOD_event_t event = TCOD_sys_wait_for_event(TCOD_EVENT_ANY, &key, &mouse, false);
+            // redraw all
+            for (int i = 1; i < _console.width; ++i)
+                for (int j = 1; j < _console.height; ++j)
+                {
+                    _console.setBackgroundColor(TCOD_color_t((j * -47 + i * 7) & 255, (i*j +78 * 4241) & 255, 255 & (i ^ j) ));
+                    _console.putChar(i, j, ' ', TCOD_BKGND_SET);
+                }
 
-            switch (event)
+            _console.flush();    
+
+
+            // handle one event
             {
-                case TCOD_EVENT_KEY_PRESS:
-                    if (key.vk == TCODK_ESCAPE)
-                    {
-                        finished = true;
-                    }
-                    else if (key.vk == TCODK_ENTER && ((0 != key.lalt) || (key.ralt != 0)))
-                    {
-                        _console.toggleFullscreen();
-                    }
-                    break;
+                TCOD_key_t key;
+                TCOD_mouse_t mouse;
+                TCOD_event_t event = TCOD_sys_wait_for_event(TCOD_EVENT_ANY, &key, &mouse, false);
 
-                case TCOD_EVENT_KEY_RELEASE:
-                    break;
+                switch (event)
+                {
+                    case TCOD_EVENT_KEY_PRESS:
+                        if (key.vk == TCODK_ESCAPE)
+                        {
+                            finished = true;
+                        }
+                        else if (key.vk == TCODK_ENTER && ((0 != key.lalt) || (key.ralt != 0)))
+                        {
+                            _console.toggleFullscreen();
+                        }
+                        break;
 
-                case TCOD_EVENT_MOUSE_MOVE:
-                    break;
+                    case TCOD_EVENT_KEY_RELEASE:
+                        break;
 
-                case TCOD_EVENT_MOUSE_PRESS:
-                    break;
+                    case TCOD_EVENT_MOUSE_MOVE:
+                        break;
 
-                case TCOD_EVENT_MOUSE_RELEASE:
-                    break;
+                    case TCOD_EVENT_MOUSE_PRESS:
+                        break;
 
-                default:
+                    case TCOD_EVENT_MOUSE_RELEASE:
+                        break;
+
+                    default:
+                }
+
+                if (TCOD_console_is_window_closed())
+                {
+                    finished = true;
+                }
+
+                if (finished)
+                    break;
             }
-
-            if (TCOD_console_is_window_closed())
-            {
-                finished = true;
-            }
-
-            if (finished)
-                break;
-
-            // tick
-            TCOD_console_print(null, 1, 1, "test");
-            _console.flush();
-
-            
         }
 
         

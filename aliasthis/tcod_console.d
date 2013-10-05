@@ -12,13 +12,12 @@ class TCODConsole
 {
 public:
 
-    // create the root console
-    this(TCODLib lib, int width, int height, bool fullscreen)
+    this(TCODLib lib, TCOD_console_t handle, int width, int height)
     {
         _lib = lib;
-        _handle = null;
-
-        TCOD_console_init_root(width, height, "drogue", fullscreen, TCOD_RENDERER_SDL);        
+        _handle = handle;
+        _width = width;
+        _height = height;
     }
 
     void toggleFullscreen()
@@ -43,7 +42,38 @@ public:
         return _handle is null;
     }
 
+    void setForegroundColor(TCOD_color_t fg)
+    {
+        TCOD_console_set_default_foreground(_handle, fg);
+    }
+
+    void setBackgroundColor(TCOD_color_t bg)
+    {
+        TCOD_console_set_default_background(_handle, bg);
+    }
+
+    void putChar(int x, int y, dchar c, TCOD_bkgnd_flag_t flag)
+    {
+        TCOD_console_put_char(_handle, x, y, c, flag);
+    }
+
+    void print(int x, int y, const(char)* text)
+    {
+        TCOD_console_print(_handle, x, y, text);
+    }
+
+    @property int width()
+    {
+        return _width;
+    }
+
+    @property int height()
+    {
+        return _height;
+    }
+
 private:
     TCODLib _lib;
     TCOD_console_t _handle;
+    int _width, _height;
 }

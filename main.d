@@ -4,8 +4,9 @@ import std.random,
        std.path,
        std.getopt;
 
-import drogue.game;
-import drogue.tcod_console;
+import aliasthis.game;
+import aliasthis.tcod_lib;
+import aliasthis.tcod_console;
 
 void main(string[] args)
 {    
@@ -23,8 +24,11 @@ void main(string[] args)
         auto rng = Xorshift(seed);
 
         // create new game and play it
+        int width  = 67;
+        int height  = 67;
 
-        auto console = scoped!TCODConsole(gameDir, fullscreen);
+        auto tcodLib = scoped!TCODLib(gameDir);
+        auto console = tcodLib.createRootConsole(width, height, fullscreen, "aliasthis");
         auto game = scoped!Game(console, rng);
 
         game.mainLoop();
