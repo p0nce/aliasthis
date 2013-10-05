@@ -1,10 +1,10 @@
-module drogue.game;
+module aliasthis.game;
 
 import std.random; 
 
 import derelict.tcod.libtcod;
 
-import drogue.tcod_console;
+import aliasthis.tcod_console;
 
 class Game
 {
@@ -17,7 +17,7 @@ public:
     void mainLoop()
     {
         bool finished = false;
-        while(!finished)
+        while(true)
         {
             TCOD_key_t key;
             TCOD_mouse_t mouse;
@@ -51,9 +51,22 @@ public:
                 default:
             }
 
+            if (TCOD_console_is_window_closed())
+            {
+                finished = true;
+            }
+
+            if (finished)
+                break;
+
             // tick
             TCOD_console_print(null, 1, 1, "test");
+            _console.flush();
+
+            
         }
+
+        
     }
 
 private:

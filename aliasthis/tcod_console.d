@@ -1,52 +1,49 @@
-module drogue.tcod_console;
+module aliasthis.tcod_console;
 
 import std.string,
        std.path; 
 
 import derelict.tcod.libtcod;
 
+import aliasthis.tcod_lib;
+
+// Wrapper for TCOD console, both root and offscreen
 class TCODConsole
 {
 public:
-    this(string gameDir, bool fullscreen)
+
+    // create the root console
+    this(TCODLib lib, int width, int height, bool fullscreen)
     {
-        // load libtcod
-        DerelictTCOD.load();        
+        _lib = lib;
+        _handle = null;
 
-        // initialize custom fonts
-        string fontFile = buildNormalizedPath(gameDir, "data/fonts/consolas_unicode_16x16.png");
-        TCOD_console_set_custom_font(toStringz(fontFile), TCOD_FONT_TYPE_GREYSCALE | TCOD_FONT_LAYOUT_ASCII_INCOL, 32, 64);
-
-        int width, height;
-        TCOD_sys_get_current_resolution(&width, &height);
-
-        // TODO
-        TCOD_console_init_root(120, 67, "drogue", fullscreen, TCOD_RENDERER_SDL);
-
-        _initialized = true;
-    }
-
-    ~this()
-    {
-        close();
-    }
-
-    void close()
-    {
-        if (_initialized)
-        {
-            _initialized = false;
-
-
-            DerelictTCOD.unload();
-        }
+        TCOD_console_init_root(width, height, "drogue", fullscreen, TCOD_RENDERER_SDL);        
     }
 
     void toggleFullscreen()
     {
+        assert(isRoot());
         TCOD_console_set_fullscreen(!TCOD_console_is_fullscreen());
     }
 
+    void clear()
+    {
+        TCOD_console_clear(_handle);
+    }
+
+    void flush()
+    {
+        assert(isRoot());
+        TCOD_console_flush();
+    }
+
+    bool isRoot()
+    {
+        return _handle is null;
+    }
+
 private:
-    bool _initialized;
+    TCODLib _lib;
+    TCOD_console_t _handle;
 }
