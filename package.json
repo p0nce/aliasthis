@@ -1,0 +1,16 @@
+{
+    "name": "drogue",
+    "targetName": "drogue",
+    "targetType": "executable",
+    "sourcePath": ".",
+    "importPaths": [ "."],
+
+    "dependencies": {
+	    "gfm:core": "~master",
+        "gfm:math": "~master",
+		"gfm:net": "~master",
+        "derelict:tcod": "~master"
+    }
+}
+
+
