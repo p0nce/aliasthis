@@ -15,14 +15,16 @@ void main(string[] args)
         string gameDir = dirName(absolutePathOfExecutable);
        
         auto seed = unpredictableSeed();
+        bool fullscreen = true;
         getopt(args,
-               "seed",  &seed);
+               "seed", &seed,
+               "fullscreen", &fullscreen);
 
         auto rng = Xorshift(seed);
 
         // create new game and play it
 
-        auto console = scoped!TCODConsole(gameDir);
+        auto console = scoped!TCODConsole(gameDir, fullscreen);
         auto game = scoped!Game(console, rng);
 
         game.mainLoop();

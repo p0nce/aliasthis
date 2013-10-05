@@ -50,6 +50,9 @@ public:
 
                 default:
             }
+
+            // tick
+            TCOD_console_print(null, 1, 1, "test");
         }
     }
 

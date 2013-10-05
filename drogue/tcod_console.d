@@ -8,7 +8,7 @@ import derelict.tcod.libtcod;
 class TCODConsole
 {
 public:
-    this(string gameDir)
+    this(string gameDir, bool fullscreen)
     {
         // load libtcod
         DerelictTCOD.load();        
@@ -18,9 +18,10 @@ public:
         TCOD_console_set_custom_font(toStringz(fontFile), TCOD_FONT_TYPE_GREYSCALE | TCOD_FONT_LAYOUT_ASCII_INCOL, 32, 64);
 
         int width, height;
+        TCOD_sys_get_current_resolution(&width, &height);
 
         // TODO
-        TCOD_console_init_root(120, 67, "drogue", false, TCOD_RENDERER_SDL);
+        TCOD_console_init_root(120, 67, "drogue", fullscreen, TCOD_RENDERER_SDL);
 
         _initialized = true;
     }
