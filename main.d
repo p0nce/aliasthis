@@ -24,13 +24,15 @@ void main(string[] args)
         auto rng = Xorshift(seed);
 
         // create new game and play it
+
+        auto tcodLib = scoped!TCODLib();
+
         int width = 91;
         int height = 32;
-
-        auto tcodLib = scoped!TCODLib(gameDir);
-        
+        tcodLib.selectBestFontForDimension(gameDir, width, height);
 
         auto console = tcodLib.createRootConsole(width, height, fullscreen, "aliasthis");
+        
         auto game = scoped!Game(console, rng);
 
         game.mainLoop();

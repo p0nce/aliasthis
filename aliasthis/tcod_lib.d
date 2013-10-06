@@ -12,14 +12,12 @@ import aliasthis.tcod_console;
 class TCODLib
 {
 public:
-    this(string gameDir)
+    this()
     {
         // load libtcod
         DerelictTCOD.load();        
 
-        // initialize custom fonts
-        string fontFile = buildNormalizedPath(gameDir, "data/fonts/consola_21x33.png");
-        TCOD_console_set_custom_font(toStringz(fontFile), TCOD_FONT_TYPE_GREYSCALE | TCOD_FONT_LAYOUT_ASCII_INCOL, 16, 16);
+        
         _initialized = true;
     }
 
@@ -35,6 +33,36 @@ public:
             _initialized = false;
             DerelictTCOD.unload();
         }
+    }
+
+    void selectBestFontForDimension(string gameDir, int consoleWidth, int consoleHeight)
+    {
+        // find biggest font that can fit
+        int[2][7] fontDim = 
+        [
+            [9, 14], [11, 17], [13, 20], [15, 24], [17, 27], [19, 30], [21, 33]
+        ];
+
+        // find resolution
+        int desktopWidth, desktopHeight;
+        TCOD_sys_get_current_resolution(&desktopWidth, &desktopHeight);
+
+        // don't change resolution for fullscreen
+        TCOD_sys_force_fullscreen_resolution(desktopWidth, desktopHeight);
+
+        int bestFont = 0;
+
+        while (bestFont < 6
+               && fontDim[bestFont+1][0] * consoleWidth < desktopWidth 
+               && fontDim[bestFont+1][1] * consoleHeight < desktopHeight)
+            bestFont++;
+
+        int fontWidth = fontDim[bestFont][0];
+        int fontHeight = fontDim[bestFont][1];
+        
+        // initialize custom font
+        string fontFile = buildNormalizedPath(gameDir, format("data/fonts/consola_%sx%s.png", fontWidth, fontHeight));
+        TCOD_console_set_custom_font(toStringz(fontFile), TCOD_FONT_TYPE_GREYSCALE | TCOD_FONT_LAYOUT_ASCII_INCOL, 16, 16);
     }
 
     // return the root console, can only be done once
