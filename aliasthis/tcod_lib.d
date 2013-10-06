@@ -1,12 +1,12 @@
 module aliasthis.tcod_lib;
 
 import std.string,
+       std.stdio,
        std.path; 
 
 import derelict.tcod.libtcod;
 
 import aliasthis.tcod_console;
-
 
 
 class TCODLib
@@ -17,6 +17,7 @@ public:
         // load libtcod
         DerelictTCOD.load();        
 
+        TCOD_sys_register_SDL_renderer(&customRenderer);
         
         _initialized = true;
     }
@@ -109,3 +110,88 @@ private static immutable int charCodes[256] =
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 ];
+
+
+extern(C) nothrow void customRenderer(void* data)
+{
+    try
+    {
+        // declare SDL 1.2 structures
+        struct SDL_PixelFormat
+        {
+            void* palette;
+            ubyte BitsPerPixel;
+            ubyte BytesPerPixel;
+            ubyte Rloss;
+            ubyte Gloss;
+            ubyte Bloss;
+            ubyte Aloss;
+            ubyte Rshift;
+            ubyte Gshift;
+            ubyte Bshift;
+            ubyte Ashift;
+            uint Rmask;
+            uint Gmask;
+            uint Bmask;
+            uint Amask;
+            uint colorkey;
+            ubyte alpha;
+        }
+
+        struct SDL_Surface 
+        {
+            uint flags;
+            SDL_PixelFormat *format;
+            int w, h;
+            ushort pitch;
+            void *pixels;
+            // incomplete        
+        }
+
+        SDL_Surface* surface = cast(SDL_Surface*)data;
+        SDL_PixelFormat* fmt = surface.format;
+
+        ubyte* pixels = cast(ubyte*)surface.pixels;
+
+        size_t pitch = surface.pitch;
+
+        if (surface.format.BytesPerPixel == 4)
+        {
+
+            for (int j = 0; j < surface.h; ++j)
+                for (int i = 0; i < surface.w; ++i)
+                {
+                    uint pixel = *(cast(uint*)(&pixels[pitch * j + 4*i]));
+                    int R = (pixel & fmt.Rmask) >> fmt.Rshift;
+                    int G = (pixel & fmt.Gmask) >> fmt.Gshift;
+                    int B = (pixel & fmt.Bmask) >> fmt.Bshift;
+
+                    float dx = (2 * (i / cast(float)surface.w - 0.5f));
+                    float dy = (2 * (j / cast(float)surface.h - 0.5f));
+
+                    float fog = 1.0f - ((dx*dx + dy*dy) ^^ 0.5f) * 0.5f;
+                    if (fog < 0) fog = 0;
+
+                    R = cast(int)(R * fog + 0.5f);
+                    G = cast(int)(G * fog + 0.5f);
+                    B = cast(int)(B * fog + 0.5f);
+
+                    pixel = (R << fmt.Rshift) | (G << fmt.Gshift) | (B << fmt.Bshift);
+                    *(cast(uint*)(&pixels[pitch * j + 4*i])) = pixel;
+
+                }
+        }
+
+        // mark all surface as dirty
+        TCOD_console_set_dirty(0, 0, surface.w, surface.h);
+
+    } catch(Exception e)
+    {
+        // not supposed to throw exception into C code
+    } catch(Error e)
+    {
+    }
+
+    
+
+}

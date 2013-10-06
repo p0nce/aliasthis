@@ -24,7 +24,7 @@ public:
                 for (int j = 0; j < _console.height; ++j)
                 {
                     _console.setBackgroundColor(TCOD_color_t((j * -47 + i * 7) & 255, (i*j +78 * 4241) & 255, 255 & (i ^ j) ));
-                    _console.print(i, j, "héllo çruel wörld", TCOD_BKGND_SET);
+                    _console.print(i, j, "hello world", TCOD_BKGND_SET);
                 }
 
             _console.flush();    
