@@ -24,10 +24,12 @@ void main(string[] args)
         auto rng = Xorshift(seed);
 
         // create new game and play it
-        int width  = 67;
-        int height  = 67;
+        int width = 91;
+        int height = 32;
 
         auto tcodLib = scoped!TCODLib(gameDir);
+        
+
         auto console = tcodLib.createRootConsole(width, height, fullscreen, "aliasthis");
         auto game = scoped!Game(console, rng);
 
