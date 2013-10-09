@@ -5,7 +5,8 @@ import std.string,
 
 import derelict.tcod.libtcod;
 
-import aliasthis.tcod_lib;
+import aliasthis.utils,
+       aliasthis.tcod_lib;
 
 // Wrapper for TCOD console, both root and offscreen
 class TCODConsole
@@ -42,17 +43,25 @@ public:
         return _handle is null;
     }
 
-    void setForegroundColor(TCOD_color_t fg)
+    void setForegroundColor(vec3ub fg)
     {
-        TCOD_console_set_default_foreground(_handle, fg);
+        TCOD_color_t tcodColor = TCOD_color_t(fg.x, fg.y, fg.z);
+        TCOD_console_set_default_foreground(_handle, tcodColor);
     }
 
-    void setBackgroundColor(TCOD_color_t bg)
+    void setBackgroundColor(vec3ub bg)
     {
-        TCOD_console_set_default_background(_handle, bg);
+        TCOD_color_t tcodColor = TCOD_color_t(bg.x, bg.y, bg.z);
+        TCOD_console_set_default_background(_handle, tcodColor);
     }
 
     void putChar(int x, int y, dchar c, TCOD_bkgnd_flag_t flag)
+    {
+        int index = _lib.invMap(c);
+        TCOD_console_put_char(_handle, x, y, index, flag);
+    }
+
+    void put(int x, int y, int c, TCOD_bkgnd_flag_t flag)
     {
         TCOD_console_put_char(_handle, x, y, c, flag);
     }
@@ -63,7 +72,7 @@ public:
         int i = 0;
         foreach(dchar d; text)
         {
-            TCOD_console_put_char(_handle, x + i, y, d, flag);
+            TCOD_console_put_char(_handle, x + i, y, _lib.invMap(d), flag);
             ++i;
         }
     }

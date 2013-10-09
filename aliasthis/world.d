@@ -20,15 +20,38 @@ class World
         {
             _cells.length = WORLD_NUM_CELLS;
 
-            for (int i = 0; i < WORLD_NUM_CELLS; ++i)
+            for (int k = 0; k < WORLD_DEPTH; ++k)
             {
-                _cells[i].type = CellType.WALL;
+                for (int j = 0; j < WORLD_HEIGHT; ++j)
+                {
+                    for (int i = 0; i < WORLD_WIDTH; ++i)
+                    {
+                        Cell* c = cell(vec3i(i, j, k));
+                        c.type = CellType.FLOOR;
+
+                        if (i == 0 || i == WORLD_WIDTH - 1 || j == 0 || j == WORLD_HEIGHT - 1)
+                            c.type = CellType.WALL;
+
+                    }
+                }
             }
+
         }
 
         Cell* cell(vec3i pos)
         {
             return &_cells[pos.x + WORLD_WIDTH * pos.y + (WORLD_WIDTH * WORLD_HEIGHT) * pos.z];
+        }
+
+        static bool contains(vec3i pos)
+        {
+            if (cast(uint)pos.x >= cast(uint)WORLD_WIDTH) 
+                return false;
+            if (cast(uint)pos.y >= cast(uint)WORLD_HEIGHT) 
+                return false;
+            if (cast(uint)pos.z >= cast(uint)WORLD_DEPTH) 
+                return false;
+            return true;
         }
     }
 

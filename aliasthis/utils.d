@@ -1,8 +1,11 @@
 module aliasthis.utils;
 
-import derelict.tcod.libtcod;
+public import std.random;
+public import gfm.math.vector;
+public import gfm.math.simplerng;
 
-TCOD_color_t color(int r, int g, int b)
+
+vec3ub color(int r, int g, int b)
 {
-    return TCOD_color_t(cast(ubyte)r, cast(ubyte)g, cast(ubyte)b);
+    return vec3ub(cast(ubyte)r, cast(ubyte)g, cast(ubyte)b);
 }

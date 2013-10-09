@@ -17,9 +17,13 @@ public:
         // load libtcod
         DerelictTCOD.load();        
 
-        TCOD_sys_register_SDL_renderer(&customRenderer);
+        //TCOD_sys_register_SDL_renderer(&customRenderer);
         
         _initialized = true;
+
+        // create inverse mapping
+        for (int i = 0; i < 256; ++i)
+            _invMap[charCodes[i]] = i;
     }
 
     ~this()
@@ -34,6 +38,14 @@ public:
             _initialized = false;
             DerelictTCOD.unload();
         }
+    }
+
+    int invMap(dchar ch)
+    {
+        if (ch in _invMap)
+            return _invMap[ch];
+        else
+            return 0x1F;
     }
 
     void selectBestFontForDimension(string gameDir, int consoleWidth, int consoleHeight)
@@ -75,9 +87,9 @@ public:
         for (int y = 0; y < 16; ++y)
             for (int x = 0; x < 16; ++x)
             {
-                TCOD_console_map_ascii_code_to_font(charCodes[y * 16 + x], x, y);
+         //       TCOD_console_map_ascii_code_to_font(charCodes[y * 16 + x], x, y);
             }
-        //TCOD_console_map_ascii_codes_to_font(0, 2048, 0, 0);
+        TCOD_console_map_ascii_codes_to_font(0, 256, 0, 0);
         return new TCODConsole(this, null, width, height);
     }
 
@@ -88,8 +100,12 @@ public:
         return new TCODConsole(this, handle, width, height);
     }
 
+    
+
 private:
     bool _initialized;
+
+    int[dchar] _invMap;
 }
 
 private static immutable int charCodes[256] = 
@@ -101,15 +117,31 @@ private static immutable int charCodes[256] =
     96, 97, 98, 99,100,101,102,103,104,105,106,107,108,109,110,111,
     112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,0xA1,
     0xB7,0xAC,0x03BB,0x2190,0x2191,0x2192,0x2193,0x2206,0x220f,0x2248,0x221A,0x263C,0x25A0,0x25A1,0x25AA,0x25B2,
-    0x2640,0x2642,0x2660,0x2663,0x2665,0x2666,0x266A,0x266B,0x2736,0x25CB,0x00A6,0xA7,0xA4,0xA9,0x3EE,0,
+    0x2640,0x2642,0x2660,0x2663,0x2665,0x2666,0x266A,0x266B,0x2736,0x25CB,0x00A6,0xA7,0xA4,0xA9,0x3EE,0x2D0,
     0x1E3D,0x1E29,0x1D60,0x1D85,0x0489,0x03DE,0x03A0,0x0284,0x0287, 0x02A1,0x01AC,0x0194,0x01AE,0x01C2,0x01AA,0x0126,
-    0x01E4,0x00A2,0xA5,0x01C0,0xDF,0x01B3,0x3E1,0x3D9,0x3E8,0,0,0,0,0,0,0,
+    0x01E4,0x00A2,0xA5,0x01C0,0xDF,0x01B3,0x3E1,0x3D9,0x3E8,0x2AD,0x46C,0x471,0x46A,0x468,0x2D1,0x298,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 ];
+
+int character(dchar ch)
+{
+    for (int i = 0; i < 256; ++i)
+        if (charCodes[i] == ch)
+            return i;
+
+    return 0x1F;
+}
+
+template ctCharacter(dchar ch)
+{
+    enum value = character(ch); // force CTFE
+    alias value ctCharacter;
+}
+
 
 
 extern(C) nothrow void customRenderer(void* data)
