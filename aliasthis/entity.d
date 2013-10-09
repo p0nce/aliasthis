@@ -28,7 +28,7 @@ class Human : Entity
             if (world.contains(newPos))
             {
                 Cell* cell = world.cell(newPos);
-                if (CanMoveInto(cell.type))
+                if (canMoveInto(cell.type))
                 {
                     position = newPos;
                     return true;

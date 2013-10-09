@@ -17,37 +17,17 @@ enum CellType
     DOOR_CLOSED,
 }
 
-struct CellGraphics
-{
-    int tcodCh; // index in TCOD font
-    vec3ub foregroundColor;
-    vec3ub backgroundColor;
-}
+
 
 struct Cell
 {
     CellType type;
 
-    CellGraphics graphics()
-    {
-        final switch(type)
-        {
-            case CellType.STAIR_UP:      return CellGraphics(ctCharacter!'<', color(255, 255, 0), color(0, 0, 0));
-            case CellType.STAIR_DOWN:    return CellGraphics(ctCharacter!'>', color(255, 255, 0), color(0, 0, 0));
-            case CellType.SHALLOW_WATER: return CellGraphics(ctCharacter!'~', color(255, 255, 255), color(128, 128, 255));
-            case CellType.DEEP_WATER:    return CellGraphics(ctCharacter!'~', color(255, 255, 255), color(128, 128, 255));
-            case CellType.LAVA:          return CellGraphics(ctCharacter!'~', color(255, 255, 255), color(255, 0, 0));
-            case CellType.HOLE:          return CellGraphics(ctCharacter!'ː', color(47, 47, 87), color(0, 0, 0));
-            case CellType.WALL:          return CellGraphics(0x75/*ctCharacter!'■'*/, color(128, 128, 128), color(192, 192, 192));
-            case CellType.FLOOR:         return CellGraphics(ctCharacter!'ˑ', color(200, 200, 200), color(30, 30, 40));
-            case CellType.DOOR_OPEN:     return CellGraphics(ctCharacter!'Π', color(128, 128, 128), color(192, 192, 192));
-            case CellType.DOOR_CLOSED:   return CellGraphics(ctCharacter!'Π', color(200, 200, 200), color(35, 12, 12));
-        }
-    }
+    CellGraphics graphics;
 }
 
 // is it blocking?
-bool CanMoveInto(CellType type)
+bool canMoveInto(CellType type)
 {
     switch(type)
     {
@@ -61,7 +41,7 @@ bool CanMoveInto(CellType type)
 }
 
 // can an entity move into it, or at least try?
-bool CanTryToMoveIntoSafely(CellType type)
+bool canTryToMoveIntoSafely(CellType type)
 {
     switch(type)
     {
@@ -84,3 +64,26 @@ bool CanTryToMoveIntoSafely(CellType type)
     }
 }
 
+struct CellGraphics
+{
+    int charIndex; // index in TCOD font
+    vec3ub foregroundColor;
+    vec3ub backgroundColor;
+}
+
+CellGraphics defaultCellGraphics(CellType type) pure
+{
+    final switch(type)
+    {
+        case CellType.STAIR_UP:      return CellGraphics(ctCharacter!'<', color(255, 255, 0), color(0, 0, 0));
+        case CellType.STAIR_DOWN:    return CellGraphics(ctCharacter!'>', color(255, 255, 0), color(0, 0, 0));
+        case CellType.SHALLOW_WATER: return CellGraphics(ctCharacter!'~', color(60, 70, 116), color(101, 116, 193));
+        case CellType.DEEP_WATER:    return CellGraphics(ctCharacter!'~', color(31, 39, 90), color(63, 78, 157));
+        case CellType.LAVA:          return CellGraphics(ctCharacter!'~', color(255, 255, 255), color(255, 0, 0));
+        case CellType.HOLE:          return CellGraphics(ctCharacter!'ː', color(47, 47, 87), color(0, 0, 0));
+        case CellType.WALL:          return CellGraphics(ctCharacter!'▪', color(192, 192, 192), color(128, 128, 128));
+        case CellType.FLOOR:         return CellGraphics(ctCharacter!'ˑ', color(200, 200, 200), color(30, 30, 40));
+        case CellType.DOOR_OPEN:     return CellGraphics(ctCharacter!'Π', color(128, 128, 128), color(192, 192, 192));
+        case CellType.DOOR_CLOSED:   return CellGraphics(ctCharacter!'Π', color(200, 200, 200), color(35, 12, 12));
+    }
+}

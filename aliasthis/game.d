@@ -114,8 +114,7 @@ private:
 
     void redraw()
     {
-        int level = _human.position.z;
-
+        int cameraLevel = _human.position.z;
         
         _console.setForegroundColor(color(0, 0, 0));
         _console.setBackgroundColor(color(0, 0, 0));
@@ -123,16 +122,30 @@ private:
         for (int y = 0; y < WORLD_HEIGHT; ++y)
             for (int x = 0; x < WORLD_WIDTH; ++x)
             {
-                Cell* cell = _world.cell(vec3i(x, y, level));
+                int lowest = cameraLevel;
+
+                while (lowest > 0 && _world.cell(vec3i(x, y, lowest)).type == CellType.HOLE)
+                    lowest--;
+
+                // render bottom to up
+                for (int z = lowest; z <= cameraLevel; ++z)
+                {
+                    Cell* cell = _world.cell(vec3i(x, y, z));
                 
-                int cx = 15 + x;
-                int cy = 1 + y;
+                    int cx = 15 + x;
+                    int cy = 1 + y;
 
-                CellGraphics gr = cell.graphics();
+                    CellGraphics gr = cell.graphics;
 
-                _console.setForegroundColor(gr.foregroundColor);
-                _console.setBackgroundColor(gr.backgroundColor);
-                _console.put(cx, cy, gr.tcodCh, TCOD_BKGND_SET);
+                    // don't render holes except at level 0
+                    if (cell.type != CellType.HOLE || z == 0)
+                    {
+                        int levelDiff = cameraLevel - lowest;
+                        _console.setForegroundColor(colorFog(gr.foregroundColor, levelDiff));
+                        _console.setBackgroundColor(colorFog(gr.backgroundColor, levelDiff));
+                        _console.put(cx, cy, gr.charIndex, TCOD_BKGND_SET);
+                    }
+                }
             }      
 
         // put players
@@ -140,8 +153,11 @@ private:
             int cx = _human.position.x + 15;
             int cy = _human.position.y + 1;
 
-            _console.setForegroundColor(color(255, 150, 20));
-            _console.putChar(cx, cy, 'Ѭ', TCOD_BKGND_NONE);
+            Cell* cell = _world.cell(vec3i(_human.position.x, _human.position.y, cameraLevel));
+            CellGraphics gr = cell.graphics;
+            _console.setBackgroundColor(mulColor(gr.backgroundColor, 0.95f));
+            _console.setForegroundColor(color(223, 105, 71));
+            _console.putChar(cx, cy, 'Ѭ', TCOD_BKGND_SET);
         }
 
 

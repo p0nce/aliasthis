@@ -2,6 +2,8 @@ module aliasthis.world;
 
 import gfm.math.all;
 
+import aliasthis.utils;
+import aliasthis.tcod_lib;
 import aliasthis.cell;
 
 // basically a big cube
@@ -19,28 +21,17 @@ class World
         this(ref Xorshift rng)
         {
             _cells.length = WORLD_NUM_CELLS;
-
-            for (int k = 0; k < WORLD_DEPTH; ++k)
-            {
-                for (int j = 0; j < WORLD_HEIGHT; ++j)
-                {
-                    for (int i = 0; i < WORLD_WIDTH; ++i)
-                    {
-                        Cell* c = cell(vec3i(i, j, k));
-                        c.type = CellType.FLOOR;
-
-                        if (i == 0 || i == WORLD_WIDTH - 1 || j == 0 || j == WORLD_HEIGHT - 1)
-                            c.type = CellType.WALL;
-
-                    }
-                }
-            }
-
+            worldGeneration(rng);
         }
 
         Cell* cell(vec3i pos)
         {
             return &_cells[pos.x + WORLD_WIDTH * pos.y + (WORLD_WIDTH * WORLD_HEIGHT) * pos.z];
+        }
+
+        Cell* cell(int x, int y, int z)
+        {
+            return &_cells[x + WORLD_WIDTH * y + (WORLD_WIDTH * WORLD_HEIGHT) * z];
         }
 
         static bool contains(vec3i pos)
@@ -58,7 +49,84 @@ class World
     private
     {
         Cell[] _cells;
+
+
+        void worldGeneration(ref Xorshift rng)
+        {
+            // set cell types
+
+            for (int k = 0; k < WORLD_DEPTH; ++k)
+            {
+                for (int j = 0; j < WORLD_HEIGHT; ++j)
+                {
+                    for (int i = 0; i < WORLD_WIDTH; ++i)
+                    {
+                        Cell* c = cell(vec3i(i, j, k));
+                        c.type = CellType.FLOOR;
+
+                        if (i == 0 || i == WORLD_WIDTH - 1 || j == 0 || j == WORLD_HEIGHT - 1)
+                            c.type = CellType.WALL;
+
+                        if (i >  4 && i < 10 && j > 4 && j < 20)
+                            c.type = CellType.DEEP_WATER;
+
+                        if (i >  14 && i < 28 && j > 4 && j < 20)
+                            c.type = CellType.SHALLOW_WATER;
+
+                        if (i == 0 && j == 15)
+                            c.type = CellType.DOOR_CLOSED;
+
+                        if (i >  30 && i < (32 + k) && j > 4 && j < 20)
+                            c.type = CellType.HOLE;
+
+                        if (i >  40 && i < 64 && j > 21 && j < 30)
+                            c.type = CellType.LAVA;
+
+                    }
+                }
+            }
+
+            // render cell types
+
+            struct LevelInfo
+            {
+                int wallCharIndex;                                
+            }
+
+            LevelInfo level[WORLD_DEPTH];
+            for (int k = 0; k < WORLD_DEPTH; ++k)
+            {
+                immutable int[] wallTypes = [ctCharacter!'▪', ctCharacter!'■', ctCharacter!'♦'];
+                level[k].wallCharIndex = wallTypes[uniform(0, wallTypes.length, rng)];
+            }
+
+            for (int k = 0; k < WORLD_DEPTH; ++k)
+            {
+                for (int j = 0; j < WORLD_HEIGHT; ++j)
+                {
+                    for (int i = 0; i < WORLD_WIDTH; ++i)
+                    {
+                        Cell* c = cell(i, j, k);
+                        CellGraphics gr = defaultCellGraphics(c.type);
+                        if (c.type == CellType.WALL)
+                            gr.charIndex = level[k].wallCharIndex;
+
+                        // perturb color
+                        float noiseAmt = 0.9f;
+                        gr.foregroundColor = perturbColorSV(gr.foregroundColor, noiseAmt * 0.02f, noiseAmt * 0.01f, rng);
+                        gr.backgroundColor = perturbColorSV(gr.backgroundColor, noiseAmt * 0.02f, noiseAmt * 0.01f, rng);
+
+                        c.graphics = gr;
+                    }
+                }
+            }
+
+            
+        }
     }
+
+
+
 }
 
 
