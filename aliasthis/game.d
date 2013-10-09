@@ -8,6 +8,8 @@ import gfm.math.all;
 
 import aliasthis.tcod_console,
        aliasthis.world,
+       aliasthis.cell,
+       aliasthis.utils,
        aliasthis.entity;
 
 class Game
@@ -105,13 +107,24 @@ private:
     {
         int level = 0;
 
-        // redraw all
-        for (int i = 0; i < _console.width; i += 10)
-            for (int j = 0; j < _console.height; ++j)
+        _console.clear();
+
+        for (int y = 0; y < WORLD_HEIGHT; ++y)
+            for (int x = 0; x < WORLD_WIDTH; ++x)
             {
-                _console.setBackgroundColor(TCOD_color_t((j * -47 + i * 7) & 255, (i*j +78 * 4241) & 255, 255 & (i ^ j) ));
-                _console.print(i, j, "hello world", TCOD_BKGND_SET);
-            }
+                Cell* cell = _world.cell(vec3i(x, y, level));
+                
+                int cx = 15 + x;
+                int cy = 1 + y;
+
+                auto bg = color(1, 1, 1);
+                auto fg = color(255,255,255);
+                dchar ch = '?';
+
+                _console.setForegroundColor(fg);
+                _console.setBackgroundColor(bg);
+                _console.putChar(cx, cy, ch, TCOD_BKGND_SET);
+            }      
 
         _console.flush();
     }
