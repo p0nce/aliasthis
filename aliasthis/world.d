@@ -79,7 +79,7 @@ class World
                         if (i >  30 && i < (32 + k) && j > 4 && j < 20)
                             c.type = CellType.HOLE;
 
-                        if (i >  40 && i < 64 && j > 21 && j < 30)
+                        if (i >  40 && i < 59 && j > 21 && j < 28)
                             c.type = CellType.LAVA;
 
                     }
@@ -90,14 +90,20 @@ class World
 
             struct LevelInfo
             {
-                int wallCharIndex;                                
+                int wallCharIndex;     
+                vec3ub wallColor;
             }
 
             LevelInfo level[WORLD_DEPTH];
             for (int k = 0; k < WORLD_DEPTH; ++k)
             {
-                immutable int[] wallTypes = [ctCharacter!'▪', ctCharacter!'■', ctCharacter!'♦'];
+                immutable int[] wallTypes = [ctCharacter!'▪', ctCharacter!'♦'];                
                 level[k].wallCharIndex = wallTypes[uniform(0, wallTypes.length, rng)];
+
+                float hue = uniform(0.0f, 1.0f, rng);
+
+                level[k].wallColor = cast(vec3ub)(0.5f + hsv2rgb(vec3f(hue, 0.40f, 0.25f)) * 255.0f);
+
             }
 
             for (int k = 0; k < WORLD_DEPTH; ++k)
@@ -109,12 +115,17 @@ class World
                         Cell* c = cell(i, j, k);
                         CellGraphics gr = defaultCellGraphics(c.type);
                         if (c.type == CellType.WALL)
+                        {
                             gr.charIndex = level[k].wallCharIndex;
 
+
+                            gr.backgroundColor = level[k].wallColor;
+                        }
+
                         // perturb color
-                        float noiseAmt = 0.9f;
-                        gr.foregroundColor = perturbColorSV(gr.foregroundColor, noiseAmt * 0.02f, noiseAmt * 0.01f, rng);
-                        gr.backgroundColor = perturbColorSV(gr.backgroundColor, noiseAmt * 0.02f, noiseAmt * 0.01f, rng);
+                        CellVariability var = cellVariability(c.type);
+                        gr.foregroundColor = perturbColorSV(gr.foregroundColor, var.SNoise, var.VNoise, rng);
+                        gr.backgroundColor = perturbColorSV(gr.backgroundColor, var.SNoise, var.VNoise, rng);
 
                         c.graphics = gr;
                     }

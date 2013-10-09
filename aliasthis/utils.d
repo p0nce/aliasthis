@@ -13,6 +13,8 @@ vec3ub color(int r, int g, int b) pure nothrow
     return vec3ub(cast(ubyte)r, cast(ubyte)g, cast(ubyte)b);
 }
 
+
+
 vec3ub mulColor(vec3ub color, float amount) pure nothrow
 {
     vec3f fcolor = cast(vec3f)color / 255.0f;
