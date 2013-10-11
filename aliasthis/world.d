@@ -14,6 +14,38 @@ enum WORLD_WIDTH = 60;
 enum WORLD_HEIGHT = 30;
 enum WORLD_DEPTH = 20;
 
+
+enum Direction
+{
+    WEST,
+    EAST,
+    NORTH,
+    SOUTH,
+    NORTH_WEST,
+    SOUTH_WEST,
+    NORTH_EAST,
+    SOUTH_EAST,
+    BELOW,
+    ABOVE
+}
+
+vec3i getDirection(Direction dir)
+{
+    final switch(dir)
+    {
+        case Direction.WEST: return vec3i(-1, 0, 0);
+        case Direction.EAST: return vec3i(+1, 0, 0);
+        case Direction.NORTH: return vec3i(0, -1, 0);
+        case Direction.SOUTH: return vec3i(0, +1, 0);
+        case Direction.NORTH_WEST: return vec3i(-1, -1, 0);
+        case Direction.SOUTH_WEST: return vec3i(-1, +1, 0);
+        case Direction.NORTH_EAST: return vec3i(+1, -1, 0);
+        case Direction.SOUTH_EAST: return vec3i(+1, +1, 0);
+        case Direction.BELOW: return vec3i(0, 0, -1);
+        case Direction.ABOVE: return vec3i(0, 0, +1);
+    }
+}
+
 class World
 {
     public
@@ -74,7 +106,7 @@ class World
                             c.type = CellType.SHALLOW_WATER;
 
                         if (i == 0 && j == 15)
-                            c.type = CellType.DOOR_CLOSED;
+                            c.type = CellType.DOOR;
 
                         if (i >  30 && i < (32 + k) && j > 4 && j < 20)
                             c.type = CellType.HOLE;
@@ -130,36 +162,8 @@ class World
                         c.graphics = gr;
                     }
                 }
-            }
-
-            
+            }            
         }
     }
-
-
-
 }
 
-
-enum Direction
-{
-    WEST,
-    EAST,
-    NORTH,
-    SOUTH,
-    BELOW,
-    ABOVE
-}
-
-vec3i getDirection(Direction dir)
-{
-    final switch(dir)
-    {
-        case Direction.WEST: return vec3i(-1, 0, 0);
-        case Direction.EAST: return vec3i(+1, 0, 0);
-        case Direction.NORTH: return vec3i(0, -1, 0);
-        case Direction.SOUTH: return vec3i(0, +1, 0);
-        case Direction.BELOW: return vec3i(0, 0, -1);
-        case Direction.ABOVE: return vec3i(0, 0, +1);
-    }
-}

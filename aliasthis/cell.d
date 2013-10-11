@@ -13,8 +13,7 @@ enum CellType
     HOLE,
     WALL,
     FLOOR,
-    DOOR_OPEN,
-    DOOR_CLOSED,
+    DOOR
 }
 
 
@@ -32,7 +31,6 @@ bool canMoveInto(CellType type)
     switch(type)
     {
         case CellType.WALL:
-        case CellType.DOOR_CLOSED:
             return false;
 
         default:
@@ -49,8 +47,7 @@ bool canTryToMoveIntoSafely(CellType type)
         case CellType.STAIR_DOWN:
         case CellType.WALL:
         case CellType.FLOOR:
-        case CellType.DOOR_OPEN:
-        case CellType.DOOR_CLOSED:
+        case CellType.DOOR:
             return true;
 
         case CellType.SHALLOW_WATER:
@@ -79,12 +76,11 @@ CellGraphics defaultCellGraphics(CellType type) pure nothrow
         case CellType.STAIR_DOWN:    return CellGraphics(ctCharacter!'>', color(255, 255, 0), color(0, 0, 0));
         case CellType.SHALLOW_WATER: return CellGraphics(ctCharacter!'~', color(60, 70, 116), color(101, 116, 193));
         case CellType.DEEP_WATER:    return CellGraphics(ctCharacter!'~', color(31, 39, 90), color(63, 78, 157));
-        case CellType.LAVA:          return CellGraphics(ctCharacter!'~', color(255, 180, 0), color(148, 82, 0));
-        case CellType.HOLE:          return CellGraphics(ctCharacter!'ː', color(47, 47, 87), color(0, 0, 0));
+        case CellType.LAVA:          return CellGraphics(ctCharacter!'~', color(205, 140, 0), color(148, 82, 0));
+        case CellType.HOLE:          return CellGraphics(ctCharacter!' ', color(47, 47, 87), color(0, 0, 0));
         case CellType.WALL:          return CellGraphics(/* dummy */ctCharacter!'▪', color(128, 128, 138), /* dummy */color(20, 32, 64));
-        case CellType.FLOOR:         return CellGraphics(ctCharacter!'ˑ', color(200, 200, 200), color(30, 30, 40));
-        case CellType.DOOR_OPEN:     return CellGraphics(ctCharacter!'Π', color(128, 128, 128), color(192, 192, 192));
-        case CellType.DOOR_CLOSED:   return CellGraphics(ctCharacter!'Π', color(200, 200, 200), color(35, 12, 12));
+        case CellType.FLOOR:         return CellGraphics(ctCharacter!'ˑ', color(70, 70, 80), color(30, 30, 40));
+        case CellType.DOOR:   return CellGraphics(ctCharacter!'Π', color(200, 200, 200), color(35, 12, 12));
     }
 }
 
@@ -105,8 +101,7 @@ CellVariability cellVariability(CellType type) pure nothrow
         case CellType.LAVA:          return CellVariability(0.018f * 3.0f, 0.009f * 3.0f);
         case CellType.HOLE:          return CellVariability(0.018f, 0.009f);
         case CellType.WALL:          return CellVariability(0.018f, 0.009f);
-        case CellType.FLOOR:         return CellVariability(0.018f * 0.6f, 0.009f * 0.6f);
-        case CellType.DOOR_OPEN:     return CellVariability(0.018f, 0.009f);
-        case CellType.DOOR_CLOSED:   return CellVariability(0.018f, 0.009f);
+        case CellType.FLOOR:         return CellVariability(0.018f * 0.4f, 0.009f * 0.4f);
+        case CellType.DOOR:          return CellVariability(0.018f, 0.009f);
     }
 }

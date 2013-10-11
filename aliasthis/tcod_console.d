@@ -3,7 +3,7 @@ module aliasthis.tcod_console;
 import std.string,
        std.path; 
 
-import derelict.tcod.libtcod;
+public import derelict.tcod.libtcod;
 
 import aliasthis.utils,
        aliasthis.tcod_lib;

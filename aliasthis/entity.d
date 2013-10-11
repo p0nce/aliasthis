@@ -1,13 +1,17 @@
 module aliasthis.entity;
 
+import std.math;
+
 import gfm.math.all;
 
 // basis for players and monsters
 import aliasthis.tcod_console,
        aliasthis.cell,
+       aliasthis.command,
        aliasthis.world;
 
 
+// a dungeon object with a position (vegetal, table, etc...)
 class Entity
 {
     public
@@ -16,25 +20,25 @@ class Entity
     }
 }
 
-class Human : Entity
+// a living entity (animal, human)
+class Creature : Entity
 {
     public
     {
-        bool go(World world, Direction dir)
-        {
-            vec3i m = getDirection(dir);
-            vec3i newPos = position + m;
+       
+    }
 
-            if (world.contains(newPos))
-            {
-                Cell* cell = world.cell(newPos);
-                if (canMoveInto(cell.type))
-                {
-                    position = newPos;
-                    return true;
-                }
-            }
-            return false;
-        }      
+    protected
+    {
+
+
+    }
+}
+
+// a human player
+class Human : Entity
+{
+    public
+    {       
     }
 }
