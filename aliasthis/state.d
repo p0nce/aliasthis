@@ -83,10 +83,13 @@ class State
         {
             final switch (command.type)
             {
+                case CommandType.WAIT:
+                    return true;
+
                 case CommandType.MOVE:
                     vec3i movement = command.movement;
-                    if (std.math.abs(movement.x) + std.math.abs(movement.y) + std.math.abs(movement.z) != 1)
-                        return false;
+                  //  if (std.math.abs(movement.x) + std.math.abs(movement.y) + std.math.abs(movement.z) != 1)
+                  //      return false;
 
                     vec3i newPos = _human.position + movement;
 

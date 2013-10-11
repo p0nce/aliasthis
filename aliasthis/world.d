@@ -82,7 +82,6 @@ class World
     {
         Cell[] _cells;
 
-
         void worldGeneration(ref Xorshift rng)
         {
             // set cell types
@@ -113,7 +112,6 @@ class World
 
                         if (i >  40 && i < 59 && j > 21 && j < 28)
                             c.type = CellType.LAVA;
-
                     }
                 }
             }

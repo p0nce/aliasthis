@@ -6,6 +6,7 @@ import aliasthis.utils,
 enum CommandType 
 {
     MOVE,
+    WAIT
 }
 
 // Command are a high-level overview of instructions.
@@ -22,6 +23,13 @@ struct Command
         Command res;
         res.type = CommandType.MOVE;
         res.movement = getDirection(dir);
+        return res;
+    }
+
+    static Command createWait()
+    {
+        Command res;
+        res.type = CommandType.WAIT;
         return res;
     }
 }

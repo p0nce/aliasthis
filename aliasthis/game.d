@@ -40,38 +40,7 @@ public:
                 switch (event)
                 {
                     case TCOD_EVENT_KEY_PRESS:
-                        if (key.vk == TCODK_ESCAPE)
-                        {
-                            finished = true;
-                        }
-                        else if (key.vk == TCODK_ENTER && ((0 != key.lalt) || (key.ralt != 0)))
-                        {
-                            _console.toggleFullscreen();
-                        }
-                        else if (key.vk == TCODK_LEFT)
-                        {
-                            _state.executeCommand(Command.createMovement(Direction.WEST));
-                        }
-                        else if (key.vk == TCODK_RIGHT)
-                        {
-                            _state.executeCommand(Command.createMovement(Direction.EAST));
-                        }
-                        else if (key.vk == TCODK_UP)
-                        {
-                            _state.executeCommand(Command.createMovement(Direction.NORTH));
-                        }
-                        else if (key.vk == TCODK_DOWN)
-                        {
-                            _state.executeCommand(Command.createMovement(Direction.SOUTH));
-                        }
-                        else if (key.c == '<')
-                        {
-                            _state.executeCommand(Command.createMovement(Direction.ABOVE));
-                        }
-                        else if (key.c == '>')
-                        {
-                            _state.executeCommand(Command.createMovement(Direction.BELOW));
-                        }
+                        handleKeypress(key, finished);
                         break;
 
                     case TCOD_EVENT_KEY_RELEASE:
@@ -116,5 +85,69 @@ private:
         _state.draw(_console);
 
         _console.flush();
+    }
+
+    void handleKeypress(TCOD_key_t key, ref bool finished)
+    {
+        Command[] commands;
+        if (key.vk == TCODK_ESCAPE)
+        {
+            finished = true;
+        }
+        else if (key.vk == TCODK_ENTER && ((0 != key.lalt) || (key.ralt != 0)))
+        {
+            _console.toggleFullscreen();
+        }
+        else if (key.vk == TCODK_LEFT || key.vk == TCODK_KP4)
+        {
+            commands ~= Command.createMovement(Direction.WEST);
+        }
+        else if (key.vk == TCODK_RIGHT || key.vk == TCODK_KP6)
+        {
+            _state.executeCommand(Command.createMovement(Direction.EAST));
+        }
+        else if (key.vk == TCODK_UP || key.vk == TCODK_KP8)
+        {
+            _state.executeCommand(Command.createMovement(Direction.NORTH));
+        }
+        else if (key.vk == TCODK_DOWN || key.vk == TCODK_KP2)
+        {
+            _state.executeCommand(Command.createMovement(Direction.SOUTH));
+        }
+        else if (key.vk == TCODK_KP7)
+        {
+            _state.executeCommand(Command.createMovement(Direction.NORTH_WEST));
+        }
+        else if (key.vk == TCODK_KP9)
+        {
+            _state.executeCommand(Command.createMovement(Direction.NORTH_EAST));
+        }
+        else if (key.vk == TCODK_KP1)
+        {
+            _state.executeCommand(Command.createMovement(Direction.SOUTH_WEST));
+        }
+        else if (key.vk == TCODK_KP3)
+        {
+            _state.executeCommand(Command.createMovement(Direction.SOUTH_EAST));
+        }
+        else if (key.vk == TCODK_KP5 || key.c == ' ')
+        {
+            _state.executeCommand(Command.createWait());
+        }
+        else if (key.c == '<')
+        {
+            _state.executeCommand(Command.createMovement(Direction.ABOVE));
+        }
+        else if (key.c == '>')
+        {
+            _state.executeCommand(Command.createMovement(Direction.BELOW));
+        }
+
+
+        if (commands.length)
+        {
+            foreach(command; commands)
+                _state.executeCommand(command);
+        }
     }
 }
