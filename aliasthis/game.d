@@ -23,7 +23,9 @@ public:
     this(TCODConsole console, ref Xorshift rng)
     {
         _console = console;
-        _gameState = GameState.createNewGame(rng);        
+        _gameState = GameState.createNewGame(rng);
+
+        _changeLog = [];
     }
 
     void mainLoop()
@@ -76,6 +78,7 @@ private:
 
     TCODConsole _console;
     GameState _gameState;
+    Change[] _changeLog;
 
     void redraw()
     {
@@ -143,16 +146,32 @@ private:
         {
             commands ~= Command.createMovement(Direction.BELOW);
         }
+        else if (key.c == 'u')
+        {
+            // undo one change
+            size_t n = _changeLog.length;
+            if (n > 0)
+            {
+                revertChange(_gameState, _changeLog[n - 1]);
+                _changeLog = _changeLog[0..n-1];
+            }
+        }
 
         assert(commands.length <= 1);
 
         if (commands.length)
         {
-            ChangeSet changes = _gameState.compileCommand(_gameState._human, commands[0]);
+            Change[] changes = _gameState.compileCommand(_gameState._human, commands[0]);
 
             if (changes !is null) // command is valid
             {
                 applyChangeSet(_gameState, changes);
+
+                // enqueue all changes
+                foreach (ref Change c ; changes)
+                {
+                    _changeLog ~= changes;
+                }
             }
         }
     }

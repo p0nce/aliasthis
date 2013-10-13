@@ -33,19 +33,6 @@ struct Change
     }
 }
 
-// a set of changes
-class ChangeSet
-{
-    Change[] items; // 0 is the earliest change
-
-    this(Change[] items_)
-    {
-        items = items_;
-    }
-
-    
-}
-
 void applyChange(GameState gameState, Change change)
 {
     final switch (change.type)
@@ -66,15 +53,15 @@ void revertChange(GameState gameState, Change change)
     }
 }
 
-void applyChangeSet(GameState gameState, ChangeSet changeSet)
+void applyChangeSet(GameState gameState, Change[] changeSet)
 {
-    foreach (ref Change change ; changeSet.items)
+    foreach (ref Change change ; changeSet)
         applyChange(gameState, change);
 }
 
-void revertChangeSet(GameState gameState, ChangeSet changeSet)
+void revertChangeSet(GameState gameState, Change[] changeSet)
 {
-    foreach_reverse (ref Change change ; changeSet.items)
-        applyChange(gameState, change);
+    foreach_reverse (ref Change change ; changeSet)
+        revertChange(gameState, change);
 }
 

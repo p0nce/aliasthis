@@ -85,7 +85,7 @@ class GameState
 
         // compile a Command to a ChangeSet
         // returns null is not a valid command
-        ChangeSet compileCommand(Entity entity, Command command /*, out bool needConfirmation */ )
+        Change[] compileCommand(Entity entity, Command command /*, out bool needConfirmation */ )
         {
             Change[] changes;
             final switch (command.type)
@@ -112,7 +112,7 @@ class GameState
                         return null;
             }
 
-            return new ChangeSet(changes);
+            return changes;
         }
     }
 
