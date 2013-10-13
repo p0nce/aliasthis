@@ -11,18 +11,19 @@ import aliasthis.tcod_console,
        aliasthis.world,
        aliasthis.cell,
        aliasthis.command,
+       aliasthis.change,
        aliasthis.utils,
-       aliasthis.state,
+       aliasthis.gamestate,
        aliasthis.entity;
 
-// holds both a game state and the mean to diaplay it
+// holds both a game state and the mean to display it
 class Game
 {
 public:
     this(TCODConsole console, ref Xorshift rng)
     {
         _console = console;
-        _state = State.createNewGame(rng);        
+        _gameState = GameState.createNewGame(rng);        
     }
 
     void mainLoop()
@@ -74,7 +75,7 @@ public:
 private:
 
     TCODConsole _console;
-    State _state;
+    GameState _gameState;
 
     void redraw()
     {
@@ -82,7 +83,7 @@ private:
         _console.setBackgroundColor(color(0, 0, 0));
         _console.clear();
 
-        _state.draw(_console);
+        _gameState.draw(_console);
 
         _console.flush();
     }
@@ -104,50 +105,55 @@ private:
         }
         else if (key.vk == TCODK_RIGHT || key.vk == TCODK_KP6)
         {
-            _state.executeCommand(Command.createMovement(Direction.EAST));
+            commands ~= Command.createMovement(Direction.EAST);
         }
         else if (key.vk == TCODK_UP || key.vk == TCODK_KP8)
         {
-            _state.executeCommand(Command.createMovement(Direction.NORTH));
+            commands ~= Command.createMovement(Direction.NORTH);
         }
         else if (key.vk == TCODK_DOWN || key.vk == TCODK_KP2)
         {
-            _state.executeCommand(Command.createMovement(Direction.SOUTH));
+            commands ~= Command.createMovement(Direction.SOUTH);
         }
         else if (key.vk == TCODK_KP7)
         {
-            _state.executeCommand(Command.createMovement(Direction.NORTH_WEST));
+            commands ~= Command.createMovement(Direction.NORTH_WEST);
         }
         else if (key.vk == TCODK_KP9)
         {
-            _state.executeCommand(Command.createMovement(Direction.NORTH_EAST));
+            commands ~= Command.createMovement(Direction.NORTH_EAST);
         }
         else if (key.vk == TCODK_KP1)
         {
-            _state.executeCommand(Command.createMovement(Direction.SOUTH_WEST));
+            commands ~= Command.createMovement(Direction.SOUTH_WEST);
         }
         else if (key.vk == TCODK_KP3)
         {
-            _state.executeCommand(Command.createMovement(Direction.SOUTH_EAST));
+            commands ~= Command.createMovement(Direction.SOUTH_EAST);
         }
         else if (key.vk == TCODK_KP5 || key.c == ' ')
         {
-            _state.executeCommand(Command.createWait());
+            commands ~= Command.createWait();
         }
         else if (key.c == '<')
         {
-            _state.executeCommand(Command.createMovement(Direction.ABOVE));
+            commands ~= Command.createMovement(Direction.ABOVE);
         }
         else if (key.c == '>')
         {
-            _state.executeCommand(Command.createMovement(Direction.BELOW));
+            commands ~= Command.createMovement(Direction.BELOW);
         }
 
+        assert(commands.length <= 1);
 
         if (commands.length)
         {
-            foreach(command; commands)
-                _state.executeCommand(command);
+            ChangeSet changes = _gameState.compileCommand(_gameState._human, commands[0]);
+
+            if (changes !is null) // command is valid
+            {
+                applyChangeSet(_gameState, changes);
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-module aliasthis.state;
+module aliasthis.gamestate;
 
 import std.random;
 
@@ -6,28 +6,33 @@ import aliasthis.tcod_console,
        aliasthis.command,
        aliasthis.entity,
        aliasthis.utils,
+       aliasthis.change,
        aliasthis.cell,
        aliasthis.world;
 
 // Holds the whole game state
-class State
+// SHOULD know nothing about Change and ChangeSet
+class GameState
 {
     public
     {
+        World _world;
+        Human _human;
+
         this(World world, Human human)
         {
             _world = world;
             _human = human;
         }
 
-        static State createNewGame(ref Xorshift rng)
+        static GameState createNewGame(ref Xorshift rng)
         {
             auto world = new World(rng);
 
             auto human = new Human();
             human.position = vec3i(10, 10, WORLD_DEPTH - 1);
 
-            return new State(world, human);
+            return new GameState(world, human);
         }
 
         void draw(TCODConsole console)
@@ -78,40 +83,38 @@ class State
         }   
 
 
-        // return true if successfully executed
-        bool executeCommand(Command command)
+        // compile a Command to a ChangeSet
+        // returns null is not a valid command
+        ChangeSet compileCommand(Entity entity, Command command /*, out bool needConfirmation */ )
         {
+            Change[] changes;
             final switch (command.type)
             {
                 case CommandType.WAIT:
-                    return true;
+                    break; // no change
 
                 case CommandType.MOVE:
                     vec3i movement = command.movement;
-                  //  if (std.math.abs(movement.x) + std.math.abs(movement.y) + std.math.abs(movement.z) != 1)
-                  //      return false;
+                    if (std.math.abs(movement.x) + std.math.abs(movement.y) + std.math.abs(movement.z) != 1)
+                        return null;
 
+                    vec3i oldPos = _human.position;
                     vec3i newPos = _human.position + movement;
 
-                    if (_world.contains(newPos))
-                    {
-                        Cell* cell = _world.cell(newPos);
-                        if (canMoveInto(cell.type))
-                        {
-                            _human.position = newPos;
-                            return true;
-                        }
-                    }
-                    return false;
+                    // out of the space
+                    if (!_world.contains(newPos))
+                        return null;
+                    
+                    Cell* cell = _world.cell(newPos);
+                    if (canMoveInto(cell.type))
+                        changes ~= Change.createMovement(oldPos, newPos);
+                    else
+                        return null;
             }
+
+            return new ChangeSet(changes);
         }
-
     }
 
-    // TODO separate commands from state changes
-    private 
-    {
-        World _world;
-        Human _human;
-    }
+  
 }
