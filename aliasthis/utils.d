@@ -13,6 +13,14 @@ vec3ub color(int r, int g, int b) pure nothrow
     return vec3ub(cast(ubyte)r, cast(ubyte)g, cast(ubyte)b);
 }
 
+vec3ub lerpColor(vec3ub a, vec3ub b, float t) pure nothrow
+{
+    vec3f af = cast(vec3f)a;
+    vec3f bf = cast(vec3f)b;
+    vec3f of = af * (1 - t) + bf * t;
+    return cast(vec3ub)(0.5f + of);
+}
+
 vec3ub mulColor(vec3ub color, float amount) pure nothrow
 {
     vec3f fcolor = cast(vec3f)color / 255.0f;

@@ -95,9 +95,15 @@ class World
             for (int j = 0; j < WORLD_HEIGHT; ++j)
                 for (int i = 0; i < WORLD_WIDTH; ++i)
                 {
-                    Cell* c = cell(i, j, visibleLevel);
-                    if (hasDynamicVariability(c.type))
-                        updateCellGraphics(_localRNG, c, i, j, visibleLevel);
+                    if (uniform(0.0f, 1.0f, _localRNG) < 0.2f)
+                    {
+                        Cell* c = cell(i, j, visibleLevel);
+                        float dynVar = dynamicVariability(c.type) * dt;
+                        if (dynVar > 1)
+                            dynVar = 1;
+                        if (dynVar > 0)
+                            updateCellGraphics(_localRNG, c, visibleLevel, dynVar);
+                    }
                 }
         }
     }
@@ -168,26 +174,29 @@ class World
                     {
                         // first-time, use an important RNG
                         Cell* c = cell(i, j, k);
-                        updateCellGraphics(rng, c, i, j, k);
+                        updateCellGraphics(rng, c, k, 1.0f);
                     }
         }
 
         // build 
-        void updateCellGraphics(ref Xorshift rng, Cell* c, int i, int j, int k)
+        void updateCellGraphics(ref Xorshift rng, Cell* c, int level, float blend)
         {
             CellGraphics gr = defaultCellGraphics(c.type);
 
             if (c.type == CellType.WALL)
             {
-                gr.charIndex = _levels[k].wallCharIndex;
-                gr.backgroundColor = _levels[k].wallColor;
+                gr.charIndex = _levels[level].wallCharIndex;
+                gr.backgroundColor = _levels[level].wallColor;
             }
 
             // perturb color
             CellVariability var = cellVariability(c.type);
             gr.foregroundColor = perturbColorSV(gr.foregroundColor, var.SNoise, var.VNoise, rng);
             gr.backgroundColor = perturbColorSV(gr.backgroundColor, var.SNoise, var.VNoise, rng);
-            c.graphics = gr;
+            c.graphics.charIndex = gr.charIndex;
+            c.graphics.foregroundColor = lerpColor(c.graphics.foregroundColor, gr.foregroundColor, blend);
+            c.graphics.backgroundColor = lerpColor(c.graphics.backgroundColor, gr.backgroundColor, blend);
+
         }
     }
 }

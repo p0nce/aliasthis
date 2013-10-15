@@ -105,14 +105,17 @@ CellVariability cellVariability(CellType type) pure nothrow
     }
 }
 
-bool hasDynamicVariability(CellType type) pure nothrow
+
+// 0 never change color over time
+// 1 change color over time
+float dynamicVariability(CellType type) pure nothrow
 {
     switch(type)
     {
-        case CellType.SHALLOW_WATER: return true;
-        case CellType.DEEP_WATER:    return true;
-        case CellType.LAVA:          return true;
+        case CellType.SHALLOW_WATER: return 4;
+        case CellType.DEEP_WATER:    return 4;
+        case CellType.LAVA:          return 6;
         default:
-            return false;
+            return 0;
     }
 }
