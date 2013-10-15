@@ -6,10 +6,10 @@
     "importPaths": [ "."],
 
     "dependencies": {
-	    "gfm:core": "~master",
-        "gfm:math": "~master",
-		"gfm:net": "~master",
-        "derelict:tcod": "~master"
+    "gfm:core": "~master",
+    "gfm:math": "~master",
+    "gfm:net": "~master",
+    "derelict:tcod": "~master"
     }
 }
 
