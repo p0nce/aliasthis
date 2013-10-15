@@ -83,7 +83,14 @@ class GameState
                 console.setForegroundColor(color(223, 105, 71));
                 console.putChar(cx, cy, 'Ѭ', TCOD_BKGND_SET);
             }
-        }   
+        }
+
+        // make things move
+        void estheticUpdate(double dt)
+        {
+            int visibleLevel = _human.position.z;
+            _world.estheticUpdate(visibleLevel, dt);
+        }
 
 
         // compile a Command to a ChangeSet

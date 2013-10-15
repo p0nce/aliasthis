@@ -46,6 +46,16 @@ vec3i getDirection(Direction dir)
     }
 }
 
+
+
+struct LevelInfo
+{
+    int wallCharIndex;
+    vec3ub wallColor;
+}
+
+
+
 class World
 {
     public
@@ -76,14 +86,45 @@ class World
                 return false;
             return true;
         }
+
+        void estheticUpdate(int visibleLevel, double dt)
+        {
+            // use an unimportant RNG for esthetic updates
+
+            // change colors of water, lava, etc...
+            for (int j = 0; j < WORLD_HEIGHT; ++j)
+                for (int i = 0; i < WORLD_WIDTH; ++i)
+                {
+                    Cell* c = cell(i, j, visibleLevel);
+                    if (hasDynamicVariability(c.type))
+                        updateCellGraphics(_localRNG, c, i, j, visibleLevel);
+                }
+        }
     }
 
     private
     {
+        // holds cell information
         Cell[] _cells;
+
+        // information about levels
+        LevelInfo _levels[WORLD_DEPTH];
+
+        Xorshift _localRNG; // for unimportant stuff like color
 
         void worldGeneration(ref Xorshift rng)
         {
+            // set level characterstics
+            for (int k = 0; k < WORLD_DEPTH; ++k)
+            {
+                immutable int[] wallTypes = [ctCharacter!'▪', ctCharacter!'♦'];
+                _levels[k].wallCharIndex = wallTypes[uniform(0, wallTypes.length, rng)];
+
+                float hue = uniform(0.0f, 1.0f, rng);
+
+                _levels[k].wallColor = cast(vec3ub)(0.5f + hsv2rgb(vec3f(hue, 0.40f, 0.25f)) * 255.0f);
+            }
+
             // set cell types
 
             for (int k = 0; k < WORLD_DEPTH; ++k)
@@ -121,51 +162,32 @@ class World
                 }
             }
 
-            // render cell types
-
-            struct LevelInfo
-            {
-                int wallCharIndex;     
-                vec3ub wallColor;
-            }
-
-            LevelInfo level[WORLD_DEPTH];
             for (int k = 0; k < WORLD_DEPTH; ++k)
-            {
-                immutable int[] wallTypes = [ctCharacter!'▪', ctCharacter!'♦'];                
-                level[k].wallCharIndex = wallTypes[uniform(0, wallTypes.length, rng)];
-
-                float hue = uniform(0.0f, 1.0f, rng);
-
-                level[k].wallColor = cast(vec3ub)(0.5f + hsv2rgb(vec3f(hue, 0.40f, 0.25f)) * 255.0f);
-
-            }
-
-            for (int k = 0; k < WORLD_DEPTH; ++k)
-            {
                 for (int j = 0; j < WORLD_HEIGHT; ++j)
-                {
                     for (int i = 0; i < WORLD_WIDTH; ++i)
                     {
+                        // first-time, use an important RNG
                         Cell* c = cell(i, j, k);
-                        CellGraphics gr = defaultCellGraphics(c.type);
-                        if (c.type == CellType.WALL)
-                        {
-                            gr.charIndex = level[k].wallCharIndex;
-
-
-                            gr.backgroundColor = level[k].wallColor;
-                        }
-
-                        // perturb color
-                        CellVariability var = cellVariability(c.type);
-                        gr.foregroundColor = perturbColorSV(gr.foregroundColor, var.SNoise, var.VNoise, rng);
-                        gr.backgroundColor = perturbColorSV(gr.backgroundColor, var.SNoise, var.VNoise, rng);
-
-                        c.graphics = gr;
+                        updateCellGraphics(rng, c, i, j, k);
                     }
-                }
-            }            
+        }
+
+        // build 
+        void updateCellGraphics(ref Xorshift rng, Cell* c, int i, int j, int k)
+        {
+            CellGraphics gr = defaultCellGraphics(c.type);
+
+            if (c.type == CellType.WALL)
+            {
+                gr.charIndex = _levels[k].wallCharIndex;
+                gr.backgroundColor = _levels[k].wallColor;
+            }
+
+            // perturb color
+            CellVariability var = cellVariability(c.type);
+            gr.foregroundColor = perturbColorSV(gr.foregroundColor, var.SNoise, var.VNoise, rng);
+            gr.backgroundColor = perturbColorSV(gr.backgroundColor, var.SNoise, var.VNoise, rng);
+            c.graphics = gr;
         }
     }
 }

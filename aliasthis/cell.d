@@ -21,7 +21,6 @@ enum CellType
 struct Cell
 {
     CellType type;
-
     CellGraphics graphics;
 }
 
@@ -103,5 +102,17 @@ CellVariability cellVariability(CellType type) pure nothrow
         case CellType.WALL:          return CellVariability(0.018f, 0.009f);
         case CellType.FLOOR:         return CellVariability(0.018f * 0.4f, 0.009f * 0.4f);
         case CellType.DOOR:          return CellVariability(0.018f, 0.009f);
+    }
+}
+
+bool hasDynamicVariability(CellType type) pure nothrow
+{
+    switch(type)
+    {
+        case CellType.SHALLOW_WATER: return true;
+        case CellType.DEEP_WATER:    return true;
+        case CellType.LAVA:          return true;
+        default:
+            return false;
     }
 }

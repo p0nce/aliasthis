@@ -31,47 +31,40 @@ public:
     void mainLoop()
     {
         bool finished = false;
+
+        immutable int POLL_DELAY = 30; // poll every 100 ms
+
         while(true)
         {
-            redraw();
+            uint timeBeforeInput = TCOD_sys_elapsed_milli();
+
+            if (TCOD_console_is_window_closed())
+            {
+                finished = true;
+            }
+
+            if (finished)
+                break;
+
             // handle one event
             {
                 TCOD_key_t key;
                 TCOD_mouse_t mouse;
-                TCOD_event_t event = TCOD_sys_wait_for_event(TCOD_EVENT_ANY, &key, &mouse, false);
+                TCOD_event_t mask = TCOD_sys_check_for_event(TCOD_EVENT_KEY_PRESS | TCOD_EVENT_MOUSE, &key, &mouse);
 
-                switch (event)
+                if (mask & TCOD_EVENT_KEY_PRESS)
                 {
-                    case TCOD_EVENT_KEY_PRESS:
-                        handleKeypress(key, finished);
-                        break;
-
-                    case TCOD_EVENT_KEY_RELEASE:
-                        break;
-
-                    case TCOD_EVENT_MOUSE_MOVE:
-                        break;
-
-                    case TCOD_EVENT_MOUSE_PRESS:
-                        break;
-
-                    case TCOD_EVENT_MOUSE_RELEASE:
-                        break;
-
-                    default:
+                    handleKeypress(key, finished);
                 }
-
-                if (TCOD_console_is_window_closed())
-                {
-                    finished = true;
-                }
-
-                if (finished)
-                    break;
             }
-        }
 
-        
+            _gameState.estheticUpdate(POLL_DELAY / 1000.0);
+            redraw();
+
+            int waitMs = cast(int)(POLL_DELAY + (timeBeforeInput - TCOD_sys_elapsed_milli()));
+            if (0 < waitMs && waitMs <= POLL_DELAY)
+                TCOD_sys_sleep_milli(waitMs);
+        }
     }
 
 private:
