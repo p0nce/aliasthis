@@ -72,8 +72,8 @@ CellGraphics defaultCellGraphics(CellType type) pure nothrow
 {
     final switch(type)
     {
-        case CellType.STAIR_UP:      return CellGraphics(ctCharacter!'<', color(255, 255, 0), color(0, 0, 0));
-        case CellType.STAIR_DOWN:    return CellGraphics(ctCharacter!'>', color(255, 255, 0), color(0, 0, 0));
+        case CellType.STAIR_UP:      return CellGraphics(ctCharacter!'<', color(170, 170, 40), color(30, 30, 40));
+        case CellType.STAIR_DOWN:    return CellGraphics(ctCharacter!'>', color(170, 170, 40), color(30, 30, 40));
         case CellType.SHALLOW_WATER: return CellGraphics(ctCharacter!'~', color(60, 70, 116), color(101, 116, 193));
         case CellType.DEEP_WATER:    return CellGraphics(ctCharacter!'~', color(31, 39, 90), color(63, 78, 157));
         case CellType.LAVA:          return CellGraphics(ctCharacter!'~', color(205, 140, 0), color(148, 82, 0));

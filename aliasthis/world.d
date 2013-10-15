@@ -112,6 +112,11 @@ class World
 
                         if (i >  40 && i < 59 && j > 21 && j < 28)
                             c.type = CellType.LAVA;
+
+                        if (i >=  50 && i < 51 && j >= 1 && j < 2)
+                            c.type = CellType.STAIR_DOWN;
+                        if (i >=  50 && i < 51 && j >= 2 && j < 3)
+                            c.type = CellType.STAIR_UP;
                     }
                 }
             }

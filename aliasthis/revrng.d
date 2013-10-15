@@ -97,7 +97,6 @@ private
         return h1;
     }
 
-
     uint rotl32 ( uint x, byte r ) pure nothrow
     {
         return (x << r) | (x >> (32 - r));
