@@ -1,11 +1,14 @@
 module aliasthis.gamestate;
 
+
+
 import std.random;
 
 import aliasthis.tcod_console,
        aliasthis.command,
        aliasthis.entity,
        aliasthis.utils,
+       aliasthis.revrng,
        aliasthis.change,
        aliasthis.cell,
        aliasthis.world;
@@ -94,18 +97,41 @@ class GameState
                     break; // no change
 
                 case CommandType.MOVE:
+                    
                     vec3i movement = command.movement;
-                    if (std.math.abs(movement.x) + std.math.abs(movement.y) + std.math.abs(movement.z) != 1)
-                        return null;
-
                     vec3i oldPos = _human.position;
                     vec3i newPos = _human.position + movement;
 
-                    // out of the space
+                    // going out of the map is not possible
                     if (!_world.contains(newPos))
                         return null;
-                    
+
+                    Cell* oldCell = _world.cell(oldPos);
                     Cell* cell = _world.cell(newPos);
+
+                    int abs_x = std.math.abs(movement.x);
+                    int abs_y = std.math.abs(movement.y);
+                    int abs_z = std.math.abs(movement.z);
+                    if (abs_z == 0)
+                    {
+                        if (abs_x > 1 || abs_y > 1)
+                            return null; // too large movement
+                    }
+                    else 
+                    {
+                        if (abs_x != 0 || abs_y != 0)
+                            return null; // too large movement
+
+                        if (abs_z > 1)
+                            return null;
+
+                        if (movement.z == -1 && oldCell.type != CellType.STAIR_DOWN)
+                            return null;
+                        
+                        if (movement.z == 1 && oldCell.type != CellType.STAIR_UP)
+                            return null;
+                    }
+                    
                     if (canMoveInto(cell.type))
                         changes ~= Change.createMovement(oldPos, newPos);
                     else
