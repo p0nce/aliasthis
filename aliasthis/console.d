@@ -24,7 +24,7 @@ class Console
             _width = width;
             _height = height;
             _sdl2 = sdl2;
-            _sdlImage = new SDLImage(_sdl2);
+            _sdlImage = new SDLImage(_sdl2, IMG_INIT_PNG);
 
             _glyphs.length = _width * _height;
 
@@ -49,10 +49,10 @@ class Console
 
         ~this()
         {
+            delete _font;
             delete _eventQueue;
             delete _window;
             delete _sdlImage;
-            delete _sdl2;
         }
 
         SDL2EventQueue eventQueue()
