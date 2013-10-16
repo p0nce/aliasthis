@@ -4,12 +4,17 @@ import std.random,
        std.path,
        std.getopt;
 
-import aliasthis.game;
-import aliasthis.tcod_lib;
-import aliasthis.tcod_console;
+import gfm.core.log,
+       gfm.sdl2.all;
+
+import aliasthis.game,
+       aliasthis.console;
+
+
 
 void main(string[] args)
 {    
+    Log log = new ConsoleLog();
     try
     {
         string absolutePathOfExecutable = absolutePath(args[0], getcwd()); 
@@ -23,18 +28,16 @@ void main(string[] args)
 
         auto rng = Xorshift(seed);
 
-        // create new game and play it
+        auto sdl2 = scoped!SDL2(log);
 
-        auto tcodLib = scoped!TCODLib();
+        // create new game and play it
 
         int width = 91;
         int height = 32;
-        tcodLib.selectBestFontForDimension(gameDir, width, height);
 
-        auto console = tcodLib.createRootConsole(width, height, fullscreen, "aliasthis");
-        
-        auto game = scoped!Game(console, rng);
+        auto console = scoped!Console(sdl2, log, gameDir, width, height);
 
+        auto game = scoped!Game(sdl2, console, rng);
         game.mainLoop();
     }
     catch(Exception e)

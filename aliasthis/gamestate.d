@@ -1,10 +1,8 @@
 module aliasthis.gamestate;
 
-
-
 import std.random;
 
-import aliasthis.tcod_console,
+import aliasthis.console,
        aliasthis.command,
        aliasthis.entity,
        aliasthis.utils,
@@ -38,7 +36,7 @@ class GameState
             return new GameState(world, human);
         }
 
-        void draw(TCODConsole console)
+        void draw(Console console)
         {
             int levelToDisplay = _human.position.z;
             for (int y = 0; y < WORLD_HEIGHT; ++y)
@@ -66,7 +64,7 @@ class GameState
                             int levelDiff = levelToDisplay - lowest;
                             console.setForegroundColor(colorFog(gr.foregroundColor, levelDiff));
                             console.setBackgroundColor(colorFog(gr.backgroundColor, levelDiff));
-                            console.put(cx, cy, gr.charIndex, TCOD_BKGND_SET);
+                            console.putChar(cx, cy, gr.charIndex);
                         }
                     }
                 }   
@@ -81,7 +79,7 @@ class GameState
                 CellGraphics gr = cell.graphics;
                 console.setBackgroundColor(mulColor(gr.backgroundColor, 0.95f));
                 console.setForegroundColor(color(223, 105, 71));
-                console.putChar(cx, cy, 'Ѭ', TCOD_BKGND_SET);
+                console.putChar(cx, cy, 'Ѭ');
             }
         }
 

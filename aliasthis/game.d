@@ -2,12 +2,10 @@ module aliasthis.game;
 
 import std.random; 
 
-import derelict.tcod.libtcod;
+import gfm.sdl2.all,
+       gfm.math.all;
 
-import gfm.math.all;
-
-import aliasthis.tcod_console,
-       aliasthis.tcod_lib,
+import aliasthis.console,
        aliasthis.world,
        aliasthis.cell,
        aliasthis.command,
@@ -20,8 +18,9 @@ import aliasthis.tcod_console,
 class Game
 {
 public:
-    this(TCODConsole console, ref Xorshift rng)
+    this(SDL2 sdl2, Console console, ref Xorshift rng)
     {
+        _sdl2 = sdl2;
         _console = console;
         _gameState = GameState.createNewGame(rng);
 
@@ -36,9 +35,9 @@ public:
 
         while(true)
         {
-            uint timeBeforeInput = TCOD_sys_elapsed_milli();
+            uint timeBeforeInput = _sdl2.getTicks();
 
-            if (TCOD_console_is_window_closed())
+            if (_console.isClosed())
             {
                 finished = true;
             }
@@ -48,28 +47,36 @@ public:
 
             // handle one event
             {
-                TCOD_key_t key;
-                TCOD_mouse_t mouse;
-                TCOD_event_t mask = TCOD_sys_check_for_event(TCOD_EVENT_KEY_PRESS | TCOD_EVENT_MOUSE, &key, &mouse);
-
-                if (mask & TCOD_EVENT_KEY_PRESS)
+                SDL_Event event;
+                if (_console.eventQueue().pollEvent(&event))
                 {
-                    handleKeypress(key, finished);
+                    switch (event.type)
+                    {
+                        case SDL_KEYDOWN:
+                            handleKeypress(event.key.keysym, finished);
+                            break;
+
+                        default:
+                            break;
+                    }
+
                 }
+
             }
 
             _gameState.estheticUpdate(POLL_DELAY / 1000.0);
             redraw();
 
-            int waitMs = cast(int)(POLL_DELAY + (timeBeforeInput - TCOD_sys_elapsed_milli()));
+            int waitMs = cast(int)(POLL_DELAY + (timeBeforeInput - _sdl2.getTicks()));
             if (0 < waitMs && waitMs <= POLL_DELAY)
-                TCOD_sys_sleep_milli(waitMs);
+                _sdl2.delay(waitMs);
         }
     }
 
 private:
 
-    TCODConsole _console;
+    SDL2 _sdl2;
+    Console _console;
     GameState _gameState;
     Change[] _changeLog;
 
@@ -84,62 +91,62 @@ private:
         _console.flush();
     }
 
-    void handleKeypress(TCOD_key_t key, ref bool finished)
+    void handleKeypress(SDL_Keysym key, ref bool finished)
     {
         Command[] commands;
-        if (key.vk == TCODK_ESCAPE)
+        if (key.sym == SDLK_ESCAPE)
         {
             finished = true;
         }
-        else if (key.vk == TCODK_ENTER && ((0 != key.lalt) || (key.ralt != 0)))
+        else if (key.sym == SDLK_RETURN && key.mod == KMOD_ALT)
         {
-            _console.toggleFullscreen();
+            _console.setFullscreen(true);
         }
-        else if (key.vk == TCODK_LEFT || key.vk == TCODK_KP4)
+        else if (key.sym == SDLK_LEFT || key.sym == SDLK_KP_4)
         {
             commands ~= Command.createMovement(Direction.WEST);
         }
-        else if (key.vk == TCODK_RIGHT || key.vk == TCODK_KP6)
+        else if (key.sym == SDLK_RIGHT || key.sym == SDLK_KP_6)
         {
             commands ~= Command.createMovement(Direction.EAST);
         }
-        else if (key.vk == TCODK_UP || key.vk == TCODK_KP8)
+        else if (key.sym == SDLK_UP || key.sym == SDLK_KP_8)
         {
             commands ~= Command.createMovement(Direction.NORTH);
         }
-        else if (key.vk == TCODK_DOWN || key.vk == TCODK_KP2)
+        else if (key.sym == SDLK_DOWN || key.sym == SDLK_KP_2)
         {
             commands ~= Command.createMovement(Direction.SOUTH);
         }
-        else if (key.vk == TCODK_KP7)
+        else if (key.sym == SDLK_KP_7)
         {
             commands ~= Command.createMovement(Direction.NORTH_WEST);
         }
-        else if (key.vk == TCODK_KP9)
+        else if (key.sym == SDLK_KP_9)
         {
             commands ~= Command.createMovement(Direction.NORTH_EAST);
         }
-        else if (key.vk == TCODK_KP1)
+        else if (key.sym == SDLK_KP_1)
         {
             commands ~= Command.createMovement(Direction.SOUTH_WEST);
         }
-        else if (key.vk == TCODK_KP3)
+        else if (key.sym == SDLK_KP_3)
         {
             commands ~= Command.createMovement(Direction.SOUTH_EAST);
         }
-        else if (key.vk == TCODK_KP5 || key.c == ' ')
+        else if (key.sym == SDLK_KP_5 || key.sym == SDLK_SPACE)
         {
             commands ~= Command.createWait();
         }
-        else if (key.c == '<')
+        else if (key.sym == SDLK_LESS)
         {
             commands ~= Command.createMovement(Direction.ABOVE);
         }
-        else if (key.c == '>')
+        else if (key.sym == SDLK_GREATER)
         {
             commands ~= Command.createMovement(Direction.BELOW);
         }
-        else if (key.c == 'u')
+        else if (key.sym == SDLK_u)
         {
             // undo one change
             size_t n = _changeLog.length;

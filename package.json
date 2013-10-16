@@ -1,5 +1,6 @@
 {
     "name": "aliasthis",
+    "description": "Unfinished roguelike.",
     "targetName": "aliasthis",
     "targetType": "executable",
     "sourcePath": ".",
@@ -9,7 +10,7 @@
     "gfm:core": "~master",
     "gfm:math": "~master",
     "gfm:net": "~master",
-    "derelict:tcod": "~master"
+    "gfm:sdl2": "~master"
     }
 }
 

@@ -2,9 +2,9 @@ module aliasthis.world;
 
 import gfm.math.all;
 
-import aliasthis.utils;
-import aliasthis.tcod_lib;
-import aliasthis.cell;
+import aliasthis.utils,
+       aliasthis.chartable,
+       aliasthis.cell;
 
 // basically a big cube
 

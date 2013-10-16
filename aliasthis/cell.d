@@ -1,7 +1,7 @@
 module aliasthis.cell;
 
-import aliasthis.tcod_lib;
-import aliasthis.utils;
+import aliasthis.utils,
+       aliasthis.chartable;
 
 enum CellType
 {
@@ -62,7 +62,7 @@ bool canTryToMoveIntoSafely(CellType type)
 
 struct CellGraphics
 {
-    int charIndex; // index in TCOD font
+    int charIndex; // index in font
     vec3ub foregroundColor;
     vec3ub backgroundColor;
 }

@@ -5,8 +5,7 @@ import std.math;
 import gfm.math.all;
 
 // basis for players and monsters
-import aliasthis.tcod_console,
-       aliasthis.cell,
+import aliasthis.cell,
        aliasthis.command,
        aliasthis.world;
 
