@@ -1,6 +1,7 @@
 {
     "name": "aliasthis",
     "description": "Unfinished roguelike.",
+    "license": "public domain",
     "targetName": "aliasthis",
     "targetType": "executable",
     "sourcePath": ".",
