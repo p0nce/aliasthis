@@ -10,7 +10,7 @@ import gfm.core.all,
 
 struct Glyph
 {
-    ubyte index;
+    ubyte fontIndex;
     vec3ub foregroundColor;
     vec3ub backgroundColor;
 }
@@ -38,21 +38,25 @@ class Console
 
             selectBestFontForDimension(gameDir, screenRes, width, height);
 
-            _window.setFullscreen(true);
+         //   _window.setFullscreen(true);
             _window.show();
-            
 
             // create an event queue and register that window
             _eventQueue = new SDL2EventQueue(_sdl2);
             _eventQueue.registerWindow(_window);
+
+            _renderer = new SDL2Renderer(_window, SDL_RENDERER_ACCELERATED );
+
+            _fontTexture = new SDL2Texture(_renderer, _font);
         }
 
         ~this()
         {
-            delete _font;
-            delete _eventQueue;
-            delete _window;
-            delete _sdlImage;
+            _fontTexture.close();
+            _renderer.close();
+            _font.close();
+            _window.close();
+            _sdlImage.close();
         }
 
         SDL2EventQueue eventQueue()
@@ -63,7 +67,6 @@ class Console
         bool isClosed()
         {
             return _eventQueue.wasQuitResquested();
-            //return _window.isClosed();
         }
 
         ref glyph(int x, int y)
@@ -85,34 +88,53 @@ class Console
         {
             foreach (ref g ; _glyphs)
             {
-                g.index = 0;
+                g.fontIndex = 0;
                 g.foregroundColor = _foregroundColor;
                 g.backgroundColor = _backgroundColor;
             }
         }
 
-        void putChar(int cx, int cy, int index)
+        void putChar(int cx, int cy, int fontIndex)
         {
             if (cx < 0 || cx >= _width || cy < 0 || cy >= _height)
                 return;
 
-            glyph(cx, cy).index = cast(ubyte)index;
+            glyph(cx, cy).fontIndex = cast(ubyte)fontIndex;
             glyph(cx, cy).foregroundColor = _foregroundColor;
             glyph(cx, cy).backgroundColor = _backgroundColor;
         }
 
         void flush()
-        {            
-            // TODO draw things
+        {     
+            _renderer.setColor(0, 0, 0, 255);
+            _renderer.clear();
+
+            _fontTexture.setBlendMode(SDL_BLENDMODE_BLEND);
+            _fontTexture.setAlphaMod(255);
+
+            for (int j = 0; j < _height; ++j)
+                for (int i = 0; i < _width; ++i)
+                {
+                    Glyph g = glyph(i, j);
+                    box2i fontRect = glyphRect(g.fontIndex);
+                    box2i destRect = box2i(i * _fontWidth, j * _fontHeight, (i + 1) * _fontWidth, (j + 1) * _fontHeight);
+
+                    _renderer.setColor(g.backgroundColor.x, g.backgroundColor.y, g.backgroundColor.z, 255);
+                    _renderer.fillRect(destRect);
+                    
+                    _fontTexture.setColorMod(g.foregroundColor.x, g.foregroundColor.y, g.foregroundColor.z);
+                    _renderer.copy(_fontTexture, fontRect, destRect);
+                }
+
 
             
+            _renderer.present();
         }
 
         final void setFullscreen(bool activated)
         {
             _window.setFullscreen(activated);
         }
-
     }
 
     private
@@ -122,6 +144,8 @@ class Console
         Window _window;
         SDL2EventQueue _eventQueue;
         SDL2Surface _font;
+        SDL2Renderer _renderer;
+        SDL2Texture _fontTexture;
         int _width;
         int _height;
         Glyph[] _glyphs;
@@ -129,6 +153,17 @@ class Console
         // currentl colors
         vec3ub _foregroundColor;
         vec3ub _backgroundColor;
+
+        int _fontWidth;
+        int _fontHeight;
+
+        box2i glyphRect(int fontIndex)
+        {
+            int ix = (fontIndex & 15);
+            int iy = (fontIndex / 16);
+            box2i rectFont = box2i(ix * _fontWidth, iy * _fontHeight, (ix + 1) * _fontWidth, (iy + 1) * _fontHeight);
+            return rectFont;
+        }
 
         void selectBestFontForDimension(string gameDir, vec2i screenRes, int consoleWidth, int consoleHeight)
         {
@@ -148,11 +183,11 @@ class Console
                    && fontDim[bestFont+1][1] * consoleHeight < desktopHeight)
                 bestFont++;
 
-            int fontWidth = fontDim[bestFont][0];
-            int fontHeight = fontDim[bestFont][1];
+            _fontWidth = fontDim[bestFont][0];
+            _fontHeight = fontDim[bestFont][1];
 
             // initialize custom font
-            string fontFile = buildNormalizedPath(gameDir, format("data/fonts/consola_%sx%s.png", fontWidth, fontHeight));
+            string fontFile = buildNormalizedPath(gameDir, format("data/fonts/consola_%sx%s.png", _fontWidth, _fontHeight));
             _font = _sdlImage.load(fontFile);
         }
     }
@@ -179,8 +214,6 @@ class Window : SDL2Window
         {
             _closed = true;
         }
-
-        
     }
 
     private
