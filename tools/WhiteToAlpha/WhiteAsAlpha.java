@@ -25,6 +25,8 @@ public class WhiteAsAlpha
 			return;
 		}
 
+		image = image.sharpen(0.20f);
+
 		image.convertWhiteToAlpha();
 	
 		try
