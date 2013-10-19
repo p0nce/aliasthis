@@ -1,13 +1,12 @@
 {
     "name": "aliasthis",
-    "description": "Unfinished roguelike.",
     "license": "public domain",
     "targetName": "aliasthis",
     "targetType": "executable",
     "sourcePath": ".",
     "importPaths": [ "."],
     
-    "license": "Public Domain (Unlicense)",
+    "license": "public domain",
     "description": "An unfinished roguelike inspired by brogue.",
 
     "dependencies": {
