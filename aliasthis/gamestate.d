@@ -5,6 +5,7 @@ import std.random;
 import aliasthis.console,
        aliasthis.command,
        aliasthis.entity,
+       aliasthis.chartable,
        aliasthis.utils,
        aliasthis.revrng,
        aliasthis.change,
@@ -79,7 +80,7 @@ class GameState
                 CellGraphics gr = cell.graphics;
                 console.setBackgroundColor(mulColor(gr.backgroundColor, 0.95f));
                 console.setForegroundColor(color(223, 105, 71));
-                console.putChar(cx, cy, 'Ѭ');
+                console.putChar(cx, cy, ctCharacter!'Ѭ');
             }
         }
 

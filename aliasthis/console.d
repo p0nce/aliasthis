@@ -21,6 +21,9 @@ class Console
     {
         this(SDL2 sdl2, Log log, string gameDir, int width, int height)
         {
+
+            SDL_SetHint("SDL_HINT_RENDER_DRIVER", "software");
+
             _width = width;
             _height = height;
             _sdl2 = sdl2;
@@ -45,7 +48,7 @@ class Console
             _eventQueue = new SDL2EventQueue(_sdl2);
             _eventQueue.registerWindow(_window);
 
-            _renderer = new SDL2Renderer(_window, SDL_RENDERER_ACCELERATED );
+            _renderer = new SDL2Renderer(_window, SDL_RENDERER_SOFTWARE);
 
             _fontTexture = new SDL2Texture(_renderer, _font);
         }

@@ -31,7 +31,7 @@ public:
     {
         bool finished = false;
 
-        immutable int POLL_DELAY = 30; // poll every 100 ms
+        immutable int POLL_DELAY = 35;
 
         while(true)
         {
@@ -48,7 +48,7 @@ public:
             // handle one event
             {
                 SDL_Event event;
-                if (_console.eventQueue().pollEvent(&event))
+                while (_console.eventQueue().pollEvent(&event))
                 {
                     switch (event.type)
                     {
