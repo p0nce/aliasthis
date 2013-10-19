@@ -1,6 +1,5 @@
 {
     "name": "aliasthis",
-    "license": "public domain",
     "targetName": "aliasthis",
     "targetType": "executable",
     "sourcePath": ".",
