@@ -2,9 +2,9 @@ module aliasthis.change;
 
 import gfm.math.vector;
 
-import aliasthis.gamestate;
+import aliasthis.worldstate;
 
-// GameState changes
+// WorldState changes
 
 
 // A change must be a small, reversible change.
@@ -33,35 +33,35 @@ struct Change
     }
 }
 
-void applyChange(GameState gameState, Change change)
+void applyChange(WorldState worldState, Change change)
 {
     final switch (change.type)
     {
         case Change.Type.MOVE:
-            gameState._human.position = change.destPosition;
+            worldState._human.position = change.destPosition;
             break;
     }
 }
 
-void revertChange(GameState gameState, Change change)
+void revertChange(WorldState worldState, Change change)
 {
     final switch (change.type)
     {
         case Change.Type.MOVE:
-            gameState._human.position = change.sourcePosition;
+            worldState._human.position = change.sourcePosition;
             break;
     }
 }
 
-void applyChangeSet(GameState gameState, Change[] changeSet)
+void applyChangeSet(WorldState worldState, Change[] changeSet)
 {
     foreach (ref Change change ; changeSet)
-        applyChange(gameState, change);
+        applyChange(worldState, change);
 }
 
-void revertChangeSet(GameState gameState, Change[] changeSet)
+void revertChangeSet(WorldState worldState, Change[] changeSet)
 {
     foreach_reverse (ref Change change ; changeSet)
-        revertChange(gameState, change);
+        revertChange(worldState, change);
 }
 

@@ -11,8 +11,8 @@ enum CommandType
 
 // Command are a high-level overview of instructions.
 // They map to actually different effects (eg: MOVE can move, dig or attack).
-// Considering a GameState, a Command executes into a ChangeSet.
-// A successful ChangeSet can be applied or not to the GameState.
+// Considering a WorldState, a Command executes into a ChangeSet.
+// A successful ChangeSet can be applied or not to the WorldState.
 // A command SHOULD be able to be asked to any Entity.
 struct Command
 {

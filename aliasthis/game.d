@@ -11,7 +11,7 @@ import aliasthis.console,
        aliasthis.command,
        aliasthis.change,
        aliasthis.utils,
-       aliasthis.gamestate,
+       aliasthis.worldstate,
        aliasthis.entity;
 
 // holds both a game state and the mean to display it
@@ -22,7 +22,7 @@ public:
     {
         _sdl2 = sdl2;
         _console = console;
-        _gameState = GameState.createNewGame(rng);
+        _worldState = WorldState.createNewGame(rng);
 
         _changeLog = [];
     }
@@ -64,7 +64,7 @@ public:
 
             }
 
-            _gameState.estheticUpdate(POLL_DELAY / 1000.0);
+            _worldState.estheticUpdate(POLL_DELAY / 1000.0);
             redraw();
 
             int waitMs = cast(int)(POLL_DELAY + (timeBeforeInput - _sdl2.getTicks()));
@@ -77,7 +77,7 @@ private:
 
     SDL2 _sdl2;
     Console _console;
-    GameState _gameState;
+    WorldState _worldState;
     Change[] _changeLog;
 
     void redraw()
@@ -86,7 +86,7 @@ private:
         _console.setBackgroundColor(color(0, 0, 0));
         _console.clear();
 
-        _gameState.draw(_console);
+        _worldState.draw(_console);
 
         _console.flush();
     }
@@ -152,7 +152,7 @@ private:
             size_t n = _changeLog.length;
             if (n > 0)
             {
-                revertChange(_gameState, _changeLog[n - 1]);
+                revertChange(_worldState, _changeLog[n - 1]);
                 _changeLog = _changeLog[0..n-1];
             }
         }
@@ -161,11 +161,11 @@ private:
 
         if (commands.length)
         {
-            Change[] changes = _gameState.compileCommand(_gameState._human, commands[0]);
+            Change[] changes = _worldState.compileCommand(_worldState._human, commands[0]);
 
             if (changes !is null) // command is valid
             {
-                applyChangeSet(_gameState, changes);
+                applyChangeSet(_worldState, changes);
 
                 // enqueue all changes
                 foreach (ref Change c ; changes)

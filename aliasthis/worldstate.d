@@ -1,4 +1,4 @@
-module aliasthis.gamestate;
+module aliasthis.worldstate;
 
 import std.random;
 
@@ -14,7 +14,7 @@ import aliasthis.console,
 
 // Holds the whole game state
 // SHOULD know nothing about Change and ChangeSet
-class GameState
+class WorldState
 {
     public
     {
@@ -27,14 +27,15 @@ class GameState
             _human = human;
         }
 
-        static GameState createNewGame(ref Xorshift rng)
+        // generate a WorldState from a seed (new game)
+        static WorldState createNewGame(ref Xorshift rng)
         {
             auto grid = new Grid(rng);
 
             auto human = new Human();
             human.position = vec3i(10, 10, GRID_DEPTH - 1);
 
-            return new GameState(grid, human);
+            return new WorldState(grid, human);
         }
 
         void draw(Console console)
