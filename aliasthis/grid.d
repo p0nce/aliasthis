@@ -8,11 +8,11 @@ import aliasthis.utils,
 
 // basically a big cube
 
-enum WORLD_NUM_CELLS = WORLD_WIDTH * WORLD_HEIGHT * WORLD_DEPTH;
+enum GRID_NUM_CELLS = GRID_WIDTH * GRID_HEIGHT * GRID_DEPTH;
 
-enum WORLD_WIDTH = 60;
-enum WORLD_HEIGHT = 30;
-enum WORLD_DEPTH = 20;
+enum GRID_WIDTH = 60;
+enum GRID_HEIGHT = 30;
+enum GRID_DEPTH = 20;
 
 
 enum Direction
@@ -56,33 +56,33 @@ struct LevelInfo
 
 
 
-class World
+class Grid
 {
     public
     {
         this(ref Xorshift rng)
         {
-            _cells.length = WORLD_NUM_CELLS;
+            _cells.length = GRID_NUM_CELLS;
             worldGeneration(rng);
         }
 
         Cell* cell(vec3i pos)
         {
-            return &_cells[pos.x + WORLD_WIDTH * pos.y + (WORLD_WIDTH * WORLD_HEIGHT) * pos.z];
+            return &_cells[pos.x + GRID_WIDTH * pos.y + (GRID_WIDTH * GRID_HEIGHT) * pos.z];
         }
 
         Cell* cell(int x, int y, int z)
         {
-            return &_cells[x + WORLD_WIDTH * y + (WORLD_WIDTH * WORLD_HEIGHT) * z];
+            return &_cells[x + GRID_WIDTH * y + (GRID_WIDTH * GRID_HEIGHT) * z];
         }
 
         static bool contains(vec3i pos)
         {
-            if (cast(uint)pos.x >= cast(uint)WORLD_WIDTH) 
+            if (cast(uint)pos.x >= cast(uint)GRID_WIDTH) 
                 return false;
-            if (cast(uint)pos.y >= cast(uint)WORLD_HEIGHT) 
+            if (cast(uint)pos.y >= cast(uint)GRID_HEIGHT) 
                 return false;
-            if (cast(uint)pos.z >= cast(uint)WORLD_DEPTH) 
+            if (cast(uint)pos.z >= cast(uint)GRID_DEPTH) 
                 return false;
             return true;
         }
@@ -92,8 +92,8 @@ class World
             // use an unimportant RNG for esthetic updates
 
             // change colors of water, lava, etc...
-            for (int j = 0; j < WORLD_HEIGHT; ++j)
-                for (int i = 0; i < WORLD_WIDTH; ++i)
+            for (int j = 0; j < GRID_HEIGHT; ++j)
+                for (int i = 0; i < GRID_WIDTH; ++i)
                 {
                     if (uniform(0.0f, 1.0f, _localRNG) < 0.2f)
                     {
@@ -114,14 +114,14 @@ class World
         Cell[] _cells;
 
         // information about levels
-        LevelInfo _levels[WORLD_DEPTH];
+        LevelInfo _levels[GRID_DEPTH];
 
         Xorshift _localRNG; // for unimportant stuff like color
 
         void worldGeneration(ref Xorshift rng)
         {
             // set level characterstics
-            for (int k = 0; k < WORLD_DEPTH; ++k)
+            for (int k = 0; k < GRID_DEPTH; ++k)
             {
                 immutable int[] wallTypes = [ctCharacter!'▪', ctCharacter!'♦'];
                 _levels[k].wallCharIndex = wallTypes[uniform(0, wallTypes.length, rng)];
@@ -133,16 +133,16 @@ class World
 
             // set cell types
 
-            for (int k = 0; k < WORLD_DEPTH; ++k)
+            for (int k = 0; k < GRID_DEPTH; ++k)
             {
-                for (int j = 0; j < WORLD_HEIGHT; ++j)
+                for (int j = 0; j < GRID_HEIGHT; ++j)
                 {
-                    for (int i = 0; i < WORLD_WIDTH; ++i)
+                    for (int i = 0; i < GRID_WIDTH; ++i)
                     {
                         Cell* c = cell(vec3i(i, j, k));
                         c.type = CellType.FLOOR;
 
-                        if (i == 0 || i == WORLD_WIDTH - 1 || j == 0 || j == WORLD_HEIGHT - 1)
+                        if (i == 0 || i == GRID_WIDTH - 1 || j == 0 || j == GRID_HEIGHT - 1)
                             c.type = CellType.WALL;
 
                         if (i >  4 && i < 10 && j > 4 && j < 20)
@@ -168,9 +168,9 @@ class World
                 }
             }
 
-            for (int k = 0; k < WORLD_DEPTH; ++k)
-                for (int j = 0; j < WORLD_HEIGHT; ++j)
-                    for (int i = 0; i < WORLD_WIDTH; ++i)
+            for (int k = 0; k < GRID_DEPTH; ++k)
+                for (int j = 0; j < GRID_HEIGHT; ++j)
+                    for (int i = 0; i < GRID_WIDTH; ++i)
                     {
                         // first-time, use an important RNG
                         Cell* c = cell(i, j, k);
