@@ -21,9 +21,11 @@ class Console
     {
         this(SDL2 sdl2, Log log, string gameDir, int width, int height)
         {
-
+            _fontTexture = null;
+            _font = null;
             SDL_SetHint("SDL_HINT_RENDER_DRIVER", "software");
 
+            _gameDir = gameDir;
             _width = width;
             _height = height;
             _sdl2 = sdl2;
@@ -34,23 +36,14 @@ class Console
             SDL_DisableScreenSaver();
 
             // TODO: choose the right display
-            vec2i screenRes = _sdl2.firstDisplaySize();
+            vec2i initialWindowSize = vec2i(800,600);//_sdl2.firstDisplaySize();
 
             // get resolution
-            _window = new Window(_sdl2, screenRes.x, screenRes.y);
-
-            selectBestFontForDimension(gameDir, screenRes, width, height);
-
-         //   _window.setFullscreen(true);
-            _window.show();
-
-            // create an event queue and register that window
-            _eventQueue = new SDL2EventQueue(_sdl2);
-            _eventQueue.registerWindow(_window);
+            _window = new Window(_sdl2, this, initialWindowSize.x, initialWindowSize.y);
+            _window.setTitle("Aliasthis v0.1");
 
             _renderer = new SDL2Renderer(_window, SDL_RENDERER_SOFTWARE);
-
-            _fontTexture = new SDL2Texture(_renderer, _font);
+            updateFont();
         }
 
         ~this()
@@ -62,14 +55,25 @@ class Console
             _sdlImage.close();
         }
 
-        SDL2EventQueue eventQueue()
+        void updateFont()
         {
-            return _eventQueue;
+            selectBestFontForDimension(_gameDir, _window.getSize(), _width, _height);
+            if (_fontTexture !is null)
+                _fontTexture.close();
+
+            _fontTexture = new SDL2Texture(_renderer, _font);
+        }
+
+        void toggleFullscreen()
+        {
+             _isFullscreen = !_isFullscreen;
+            _window.setFullscreen(_isFullscreen);
+            updateFont();
         }
 
         bool isClosed()
         {
-            return _eventQueue.wasQuitResquested();
+            return _sdl2.wasQuitResquested();
         }
 
         ref glyph(int x, int y)
@@ -120,7 +124,9 @@ class Console
                 {
                     Glyph g = glyph(i, j);
                     box2i fontRect = glyphRect(g.fontIndex);
-                    box2i destRect = box2i(i * _fontWidth, j * _fontHeight, (i + 1) * _fontWidth, (j + 1) * _fontHeight);
+                    int destX = _consoleOffsetX + i * _fontWidth;
+                    int destY = _consoleOffsetY + j * _fontHeight;
+                    box2i destRect = box2i(destX, destY, destX + _fontWidth, destY + _fontHeight);
 
                     _renderer.setColor(g.backgroundColor.x, g.backgroundColor.y, g.backgroundColor.z, 255);
                     _renderer.fillRect(destRect);
@@ -145,13 +151,14 @@ class Console
         SDL2 _sdl2;
         SDLImage _sdlImage;
         Window _window;
-        SDL2EventQueue _eventQueue;
         SDL2Surface _font;
         SDL2Renderer _renderer;
         SDL2Texture _fontTexture;
         int _width;
         int _height;
         Glyph[] _glyphs;
+        bool _isFullscreen;
+        string _gameDir;
 
         // currentl colors
         vec3ub _foregroundColor;
@@ -159,6 +166,8 @@ class Console
 
         int _fontWidth;
         int _fontHeight;
+        int _consoleOffsetX;
+        int _consoleOffsetY;
 
         box2i glyphRect(int fontIndex)
         {
@@ -191,7 +200,12 @@ class Console
 
             // initialize custom font
             string fontFile = buildNormalizedPath(gameDir, format("data/fonts/consola_%sx%s.png", _fontWidth, _fontHeight));
+            if (_font !is null)
+                _font.close();
             _font = _sdlImage.load(fontFile);
+
+            _consoleOffsetX = (desktopWidth - _fontWidth * consoleWidth) / 2;
+            _consoleOffsetY = (desktopHeight - _fontHeight * consoleHeight) / 2;
         }
     }
 }
@@ -200,16 +214,17 @@ class Window : SDL2Window
 {
     public
     {
-        this(SDL2 sdl2, int width, int height)
+        this(SDL2 sdl2, Console console, int width, int height)
         {
             super(sdl2, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                  width, height, 0);
+                  width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS);
             _closed = false;
-            
+            _console = console;
         }
 
         override void onResized(int width, int height)
         {
+            _console.updateFont();
             super.onResized(width, height);
         }
 
@@ -221,6 +236,7 @@ class Window : SDL2Window
 
     private
     {     
+        Console _console;
         bool _closed;
     }
     

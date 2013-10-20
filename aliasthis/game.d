@@ -48,7 +48,7 @@ public:
             // handle one event
             {
                 SDL_Event event;
-                while (_console.eventQueue().pollEvent(&event))
+                while (_sdl2.pollEvent(&event))
                 {
                     switch (event.type)
                     {
@@ -98,9 +98,9 @@ private:
         {
             finished = true;
         }
-        else if (key.sym == SDLK_RETURN && key.mod == KMOD_ALT)
+        else if (key.sym == SDLK_RETURN && ((key.mod & KMOD_ALT) != 0))
         {
-            _console.setFullscreen(true);
+            _console.toggleFullscreen();
         }
         else if (key.sym == SDLK_LEFT || key.sym == SDLK_KP_4)
         {

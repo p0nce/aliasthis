@@ -81,16 +81,17 @@ private
 
         switch(len & 3)
         {
-            case 3: k1 ^= tail[2] << 16;
-            case 2: k1 ^= tail[1] << 8;
+            case 3: k1 ^= tail[2] << 16; goto case 2;
+            case 2: k1 ^= tail[1] << 8; goto case 1;
             case 1: k1 ^= tail[0];
                 k1 *= c1; 
                 k1 = rotl32(k1,15); 
                 k1 *= c2; 
                 h1 ^= k1;
+                break;
             case 0:
             default:
-        };
+        }
 
         h1 ^= len;
         h1 = fmix32(h1);

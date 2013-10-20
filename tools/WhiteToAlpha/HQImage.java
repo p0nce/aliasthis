@@ -22,6 +22,19 @@ final public class HQImage
 	{
 		return data[(j * width + i) * 4 + c];
 	}
+
+	float getDataEdgeClamp(int i, int j, int c)
+	{
+		if (i < 0)
+			i = 0;
+		if (j < 0)
+			j = 0;
+		if (i >= width)
+			i = width - 1;
+		if (j >= height)
+			j = height - 1;
+		return data[(j * width + i) * 4 + c];
+	}
 	
 	
 	public HQImage(String filename) throws IOException
@@ -82,9 +95,9 @@ final public class HQImage
 			for (int i = 0; i < width; ++i)
 			{
 				float alpha = (getData(i, j, 0) + getData(i, j, 1) + getData(i, j, 2)) / 3.0f;
-				setData(i, j, 0, 1.0f);
-				setData(i, j, 1, 1.0f);
-				setData(i, j, 2, 1.0f);
+			//	setData(i, j, 0, 1.0f);
+		//		setData(i, j, 1, 1.0f);
+	//			setData(i, j, 2, 1.0f);
 				setData(i, j, 3, alpha);
  			}
 		}
@@ -397,6 +410,34 @@ final public class HQImage
 		System.out.println("OK");
 		return res;		
 	}
+
+	public HQImage sharpen(float amount)
+	{
+		HQImage res = new HQImage(width, height);
+		
+		for (int j = 0; j < height; ++j)
+		{
+			for (int i = 0; i < width; ++i)
+			{
+				for (int k = 0; k < 4; ++k)
+				{					
+					double x = getData(i, j, k) * (1 + 8 * amount)
+					         - getDataEdgeClamp(i-1, j-1, k) * amount
+					         - getDataEdgeClamp(i  , j-1, k) * amount
+					         - getDataEdgeClamp(i+1, j-1, k) * amount
+					         - getDataEdgeClamp(i-1, j  , k) * amount
+					         - getDataEdgeClamp(i+1, j  , k) * amount
+					         - getDataEdgeClamp(i-1, j+1, k) * amount
+					         - getDataEdgeClamp(i  , j+1, k) * amount
+					         - getDataEdgeClamp(i+1, j+1, k) * amount;
+
+
+					res.setData(i, j, k, (float)x);
+				}
+			}
+		}
+		return res;		
+	}
 	
 	// L1 maps to L1, MAX map to 1.0
 	// L0 maps to L0, MIN map to 0.0
@@ -491,8 +532,6 @@ final public class HQImage
 		Random random = new Random();
 		double clipEnergy = 0.0;
 		
-		int minR = 255, minG = 255, minB = 255;
-		int maxR = 0, maxG = 0, maxB = 0;
 		
 		for (int j = 0; j < height; ++j)
 		{
@@ -506,67 +545,40 @@ final public class HQImage
 				int g = (int)Math.round(getData(i, j, 1) * 255.0);
 				int b = (int)Math.round(getData(i, j, 2) * 255.0);
 				int a = (int)Math.round(getData(i, j, 3) * 255.0);
-				
-				if (r < minR) 
-				{
-					minR = r;					
-				}
-				if (r > maxR)
-				{
-					maxR = r;					
-				}
-				if (g < minG)
-				{
-					minG = g;
-				}
-				if (g > maxG)
-				{
-					maxG = g;
-				}
-				if (b < minB)
-				{
-					minB = b;
-				}
-				if (b > maxB)
-				{
-					maxB = b;
-				}
+
 				
 				if (r < 0) 
 				{
-					clipEnergy -= r;
 					r = 0;
 				}
 				if (g < 0) 
 				{
-					clipEnergy -= g;
 					g = 0;
 				}
 				if (b < 0) 
 				{
-					clipEnergy -= b;
 					b = 0;
+				}
+				if (a < 0) 
+				{
+					a = 0;
 				}
 				
 				if (r > 255) 
 				{
-					clipEnergy += r - 255;
 					r = 255;
 				}
 				if (g > 255) 
 				{
-					clipEnergy += g - 255;
 					g = 255;
 				}
 				if (b > 255) 
 				{
-					clipEnergy += b - 255;
 					b = 255;
 				}
-				if (b > 255) 
+				if (a > 255) 
 				{
-					clipEnergy += b - 255;
-					b = 255;
+					a = 255;
 				}				
 				
 				dest.setRGB(i, j, (a << 24) | (r << 16) | (g << 8) | b);
@@ -583,12 +595,7 @@ final public class HQImage
 		}
 		
 		String format = filename.substring(i+1);
-		
-		System.out.println("Format \"" + format + "\" detected.");
-		
-		System.out.print("Write output... ");
 		ImageIO.write(dest, format, outputFile);
-		System.out.println("OK");
 	}
 	
 }
