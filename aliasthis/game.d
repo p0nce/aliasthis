@@ -6,7 +6,7 @@ import gfm.sdl2.all,
        gfm.math.all;
 
 import aliasthis.console,
-       aliasthis.world,
+       aliasthis.grid,
        aliasthis.cell,
        aliasthis.command,
        aliasthis.change,

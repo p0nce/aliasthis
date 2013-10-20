@@ -10,7 +10,7 @@ import aliasthis.console,
        aliasthis.revrng,
        aliasthis.change,
        aliasthis.cell,
-       aliasthis.world;
+       aliasthis.grid;
 
 // Holds the whole game state
 // SHOULD know nothing about Change and ChangeSet
@@ -18,41 +18,41 @@ class GameState
 {
     public
     {
-        World _world;
+        Grid _grid;
         Human _human;
 
-        this(World world, Human human)
+        this(Grid grid, Human human)
         {
-            _world = world;
+            _grid = grid;
             _human = human;
         }
 
         static GameState createNewGame(ref Xorshift rng)
         {
-            auto world = new World(rng);
+            auto grid = new Grid(rng);
 
             auto human = new Human();
-            human.position = vec3i(10, 10, WORLD_DEPTH - 1);
+            human.position = vec3i(10, 10, GRID_DEPTH - 1);
 
-            return new GameState(world, human);
+            return new GameState(grid, human);
         }
 
         void draw(Console console)
         {
             int levelToDisplay = _human.position.z;
-            for (int y = 0; y < WORLD_HEIGHT; ++y)
+            for (int y = 0; y < GRID_HEIGHT; ++y)
             {
-                for (int x = 0; x < WORLD_WIDTH; ++x)
+                for (int x = 0; x < GRID_WIDTH; ++x)
                 {
                     int lowest = levelToDisplay;
 
-                    while (lowest > 0 && _world.cell(vec3i(x, y, lowest)).type == CellType.HOLE)
+                    while (lowest > 0 && _grid.cell(vec3i(x, y, lowest)).type == CellType.HOLE)
                         lowest--;
 
                     // render bottom to up
                     for (int z = lowest; z <= levelToDisplay; ++z)
                     {
-                        Cell* cell = _world.cell(vec3i(x, y, z));
+                        Cell* cell = _grid.cell(vec3i(x, y, z));
 
                         int cx = 15 + x;
                         int cy = 1 + y;
@@ -76,7 +76,7 @@ class GameState
                 int cx = _human.position.x + 15;
                 int cy = _human.position.y + 1;
 
-                Cell* cell = _world.cell(vec3i(_human.position.x, _human.position.y, levelToDisplay));
+                Cell* cell = _grid.cell(vec3i(_human.position.x, _human.position.y, levelToDisplay));
                 CellGraphics gr = cell.graphics;
                 console.setBackgroundColor(mulColor(gr.backgroundColor, 0.95f));
                 console.setForegroundColor(color(223, 105, 71));
@@ -88,7 +88,7 @@ class GameState
         void estheticUpdate(double dt)
         {
             int visibleLevel = _human.position.z;
-            _world.estheticUpdate(visibleLevel, dt);
+            _grid.estheticUpdate(visibleLevel, dt);
         }
 
 
@@ -109,11 +109,11 @@ class GameState
                     vec3i newPos = _human.position + movement;
 
                     // going out of the map is not possible
-                    if (!_world.contains(newPos))
+                    if (!_grid.contains(newPos))
                         return null;
 
-                    Cell* oldCell = _world.cell(oldPos);
-                    Cell* cell = _world.cell(newPos);
+                    Cell* oldCell = _grid.cell(oldPos);
+                    Cell* cell = _grid.cell(newPos);
 
                     int abs_x = std.math.abs(movement.x);
                     int abs_y = std.math.abs(movement.y);

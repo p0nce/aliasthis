@@ -7,7 +7,7 @@ import gfm.math.all;
 // basis for players and monsters
 import aliasthis.cell,
        aliasthis.command,
-       aliasthis.world;
+       aliasthis.grid;
 
 
 // a dungeon object with a position (vegetal, table, etc...)

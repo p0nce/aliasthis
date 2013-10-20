@@ -1,4 +1,4 @@
-module aliasthis.world;
+module aliasthis.grid;
 
 import gfm.math.all;
 
