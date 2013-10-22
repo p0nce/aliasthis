@@ -28,7 +28,7 @@ class WorldState
         }
 
         // generate a WorldState from a seed (new game)
-        static WorldState createNewGame(ref Xorshift rng)
+        static WorldState createNewWorld(ref Xorshift rng)
         {
             auto grid = new Grid(rng);
 

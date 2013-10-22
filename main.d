@@ -7,7 +7,7 @@ import std.random,
 import gfm.core.log,
        gfm.sdl2.all;
 
-import aliasthis.game,
+import aliasthis.statemachine,
        aliasthis.console;
 
 
@@ -26,8 +26,6 @@ void main(string[] args)
                "seed", &seed,
                "fullscreen", &fullscreen);
 
-        auto rng = Xorshift(seed);
-
         auto sdl2 = scoped!SDL2(log);
 
         // create new game and play it
@@ -37,8 +35,8 @@ void main(string[] args)
 
         auto console = scoped!Console(sdl2, log, gameDir, width, height);
 
-        auto game = scoped!Game(sdl2, console, rng);
-        game.mainLoop();
+        auto stateMachine = scoped!StateMachine(sdl2, console);
+        stateMachine.mainLoop();
     }
     catch(Exception e)
     {

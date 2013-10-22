@@ -1,7 +1,7 @@
 module aliasthis.command;
 
-import aliasthis.utils,
-       aliasthis.grid;
+import aliasthis.utils;
+public import aliasthis.grid;
 
 enum CommandType 
 {

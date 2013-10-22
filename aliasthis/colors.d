@@ -1,12 +1,14 @@
 module aliasthis.utils;
 
 public import std.random;
-public import gfm.math.vector;
-public import gfm.math.funcs;
-public import gfm.math.simplerng;
 
-import std.algorithm;
-import std.math;
+import std.algorithm,
+       std.math;
+
+public import gfm.math.vector,
+              gfm.math.funcs,
+              gfm.math.simplerng;
+
 
 vec3ub color(int r, int g, int b) pure nothrow
 {

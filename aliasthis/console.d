@@ -7,6 +7,8 @@ import gfm.core.all,
        gfm.sdl2.all,
        gfm.math.all;
 
+import aliasthis.chartable;
+public import aliasthis.utils;
 
 struct Glyph
 {
@@ -111,6 +113,12 @@ class Console
             glyph(cx, cy).backgroundColor = _backgroundColor;
         }
 
+        void putText(int cx, int cy, string text)
+        {
+            foreach (dchar ch, int i; text)
+                putChar(cx + i, cy, character(ch));
+        }
+
         void flush()
         {     
             _renderer.setColor(0, 0, 0, 255);
@@ -134,8 +142,6 @@ class Console
                     _fontTexture.setColorMod(g.foregroundColor.x, g.foregroundColor.y, g.foregroundColor.z);
                     _renderer.copy(_fontTexture, fontRect, destRect);
                 }
-
-
             
             _renderer.present();
         }
@@ -199,10 +205,11 @@ class Console
             _fontHeight = fontDim[bestFont][1];
 
             // initialize custom font
-            string fontFile = buildNormalizedPath(gameDir, format("data/fonts/consola_%sx%s.png", _fontWidth, _fontHeight));
+            string fontPath = format("data/fonts/consola_%sx%s.png", _fontWidth, _fontHeight);
+            fontPath = buildNormalizedPath(gameDir, fontPath);
             if (_font !is null)
                 _font.close();
-            _font = _sdlImage.load(fontFile);
+            _font = _sdlImage.load(fontPath);
 
             _consoleOffsetX = (desktopWidth - _fontWidth * consoleWidth) / 2;
             _consoleOffsetY = (desktopHeight - _fontHeight * consoleHeight) / 2;
