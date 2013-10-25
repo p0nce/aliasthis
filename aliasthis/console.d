@@ -38,7 +38,7 @@ class Console
             SDL_DisableScreenSaver();
 
             // TODO: choose the right display
-            vec2i initialWindowSize = vec2i(800,600);//_sdl2.firstDisplaySize();
+            vec2i initialWindowSize = vec2i(1280,720);
 
             // get resolution
             _window = new Window(_sdl2, this, initialWindowSize.x, initialWindowSize.y);
@@ -115,17 +115,18 @@ class Console
 
         void putText(int cx, int cy, string text)
         {
-            foreach (dchar ch, int i; text)
+            foreach (int i, dchar ch; text)
                 putChar(cx + i, cy, character(ch));
         }
 
         void flush()
         {     
+            _renderer.setViewportFull();
             _renderer.setColor(0, 0, 0, 255);
             _renderer.clear();
 
             _fontTexture.setBlendMode(SDL_BLENDMODE_BLEND);
-            _fontTexture.setAlphaMod(255);
+            _fontTexture.setAlphaMod(254); // Work-around: 255 yield nothing, strange!
 
             for (int j = 0; j < _height; ++j)
                 for (int i = 0; i < _width; ++i)
@@ -210,6 +211,8 @@ class Console
             if (_font !is null)
                 _font.close();
             _font = _sdlImage.load(fontPath);
+            assert(_font.width == _fontWidth * 16);
+            assert(_font.height == _fontHeight * 16);
 
             _consoleOffsetX = (desktopWidth - _fontWidth * consoleWidth) / 2;
             _consoleOffsetY = (desktopHeight - _fontHeight * consoleHeight) / 2;

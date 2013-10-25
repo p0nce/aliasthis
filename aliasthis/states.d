@@ -64,9 +64,8 @@ public:
     override void draw(Console console, double dt)
     {
         _game.draw(console, dt);
-        console.setBackgroundColor(color(0, 0, 0));
-        console.setForegroundColor(color(255, 255, 255));
-        console.putText(1, 1, "StatePlay");
+
+        // TODO hud
     }
 
     override State handleKeypress(SDL_Keysym key)

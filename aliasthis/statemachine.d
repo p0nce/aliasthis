@@ -20,7 +20,7 @@ public:
     {
         _sdl2 = sdl2;
         _console = console;    
-        _state = new StateMainMenu();
+        _state = new StatePlay(0);
         _frameCounter = new FrameCounter(sdl2);
     }
 
