@@ -143,6 +143,24 @@ class WorldState
                         changes ~= Change.createMovement(oldPos, newPos);
                     else
                         return null;
+
+                    // fall into holes
+                    while (cell.type == CellType.HOLE)
+                    {
+                        vec3i belowPos = newPos - vec3i(0, 0, 1);
+                        if (!_grid.contains(belowPos))
+                            break;
+
+                        Cell* below = _grid.cell(belowPos);
+                        if (canMoveInto(below.type))
+                        {
+                            changes ~= Change.createMovement(newPos, belowPos);
+                            newPos = belowPos;
+                            cell = below;
+                        }
+                        else
+                            break;
+                    }
             }
 
             return changes;

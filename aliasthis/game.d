@@ -2,9 +2,12 @@ module aliasthis.game;
 
 import std.random;
 
+import gfm.core.queue;
+
 import aliasthis.console,
        aliasthis.command,
        aliasthis.change,
+       aliasthis.config,
        aliasthis.worldstate;
 
 // Holds the game state and how we got there.
@@ -12,18 +15,36 @@ import aliasthis.console,
 class Game
 {
 public:
+    enum NUM_BUFFERED_MESSAGES = 100;
+
     this(uint initialSeed)
     {
         rng.seed(initialSeed);
         _worldState = WorldState.createNewWorld(rng);
         _changeLog = [];
         _commandLog = [];
+
+        _messageLog = new RingBuffer!string(NUM_BUFFERED_MESSAGES);
+        foreach (i ; 0..NUM_BUFFERED_MESSAGES)
+            _messageLog.pushBack("");
     }    
+
+    // enqueue a game log message
+    void message(string m)
+    {
+        _messageLog.pushFront(m);
+    }
 
     void draw(Console console, double dt)
     {
         _worldState.estheticUpdate(dt);
         _worldState.draw(console);
+
+        // draw last log line
+        console.setBackgroundColor(color(0, 0, 0));
+        console.setForegroundColor(color(255, 255, 255));
+        console.putText(0, console.height - 1, _messageLog.front());
+
     }
 
     void executeCommand(Command command)
@@ -55,10 +76,13 @@ public:
         }
     }
 
+
+
 private:
     Xorshift rng;
     int initialSeed;
     WorldState _worldState;
     Change[] _changeLog;
     Command[] _commandLog;
+    RingBuffer!string _messageLog;
 }

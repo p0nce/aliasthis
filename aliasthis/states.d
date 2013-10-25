@@ -59,11 +59,14 @@ public:
     this(uint initialSeed)
     {
         _game = new Game(initialSeed);
+        _game.message("You entered the crypt of Aliasthis");
     }    
 
     override void draw(Console console, double dt)
     {
         _game.draw(console, dt);
+
+
 
         // TODO hud
     }
@@ -81,18 +84,22 @@ public:
         }
         else if (key.sym == SDLK_LEFT || key.sym == SDLK_KP_4)
         {
+            _game.message("You go west");
             commands ~= Command.createMovement(Direction.WEST);
         }
         else if (key.sym == SDLK_RIGHT || key.sym == SDLK_KP_6)
         {
+            _game.message("You go east");
             commands ~= Command.createMovement(Direction.EAST);
         }
         else if (key.sym == SDLK_UP || key.sym == SDLK_KP_8)
         {
+            _game.message("You go north");
             commands ~= Command.createMovement(Direction.NORTH);
         }
         else if (key.sym == SDLK_DOWN || key.sym == SDLK_KP_2)
         {
+            _game.message("You go south");
             commands ~= Command.createMovement(Direction.SOUTH);
         }
         else if (key.sym == SDLK_KP_7)

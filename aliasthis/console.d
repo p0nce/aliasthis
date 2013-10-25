@@ -57,6 +57,16 @@ class Console
             _sdlImage.close();
         }
 
+        @property width()
+        {
+            return _width;
+        }
+
+        @property height()
+        {
+            return _height;
+        }
+
         void updateFont()
         {
             selectBestFontForDimension(_gameDir, _window.getSize(), _width, _height);
