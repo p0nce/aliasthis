@@ -7,7 +7,6 @@ import gfm.core.queue;
 import aliasthis.console,
        aliasthis.command,
        aliasthis.change,
-       aliasthis.config,
        aliasthis.worldstate;
 
 // Holds the game state and how we got there.
@@ -41,8 +40,8 @@ public:
         _worldState.draw(console);
 
         // draw last log line
-        console.setBackgroundColor(color(0, 0, 0));
-        console.setForegroundColor(color(255, 255, 255));
+        console.setBackgroundColor(rgb(0, 0, 0));
+        console.setForegroundColor(rgba(255, 255, 255, 255));
         console.putText(0, console.height - 1, _messageLog.front());
 
     }

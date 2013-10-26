@@ -71,15 +71,15 @@ CellGraphics defaultCellGraphics(CellType type) pure nothrow
 {
     final switch(type)
     {
-        case CellType.STAIR_UP:      return CellGraphics(ctCharacter!'<', color(170, 170, 40), color(30, 30, 40));
-        case CellType.STAIR_DOWN:    return CellGraphics(ctCharacter!'>', color(170, 170, 40), color(30, 30, 40));
-        case CellType.SHALLOW_WATER: return CellGraphics(ctCharacter!'~', color(60, 70, 116), color(101, 116, 193));
-        case CellType.DEEP_WATER:    return CellGraphics(ctCharacter!'~', color(31, 39, 90), color(63, 78, 157));
-        case CellType.LAVA:          return CellGraphics(ctCharacter!'~', color(205, 140, 0), color(148, 82, 0));
-        case CellType.HOLE:          return CellGraphics(ctCharacter!' ', color(47, 47, 87), color(0, 0, 0));
-        case CellType.WALL:          return CellGraphics(/* dummy */ctCharacter!'▪', color(128, 128, 138), /* dummy */color(20, 32, 64));
-        case CellType.FLOOR:         return CellGraphics(ctCharacter!'ˑ', color(70, 70, 80), color(30, 30, 40));
-        case CellType.DOOR:   return CellGraphics(ctCharacter!'Π', color(200, 200, 200), color(35, 12, 12));
+        case CellType.STAIR_UP:      return CellGraphics(ctCharacter!'<', rgb(170, 170, 40), rgb(30, 30, 40));
+        case CellType.STAIR_DOWN:    return CellGraphics(ctCharacter!'>', rgb(170, 170, 40), rgb(30, 30, 40));
+        case CellType.SHALLOW_WATER: return CellGraphics(ctCharacter!'~', rgb(60, 70, 116), rgb(101, 116, 193));
+        case CellType.DEEP_WATER:    return CellGraphics(ctCharacter!'~', rgb(31, 39, 90), rgb(63, 78, 157));
+        case CellType.LAVA:          return CellGraphics(ctCharacter!'~', rgb(205, 140, 0), rgb(148, 82, 0));
+        case CellType.HOLE:          return CellGraphics(ctCharacter!' ', rgb(47, 47, 87), rgb(0, 0, 0));
+        case CellType.WALL:          return CellGraphics(/* dummy */ctCharacter!'▪', rgb(128, 128, 138), /* dummy */rgb(20, 32, 64));
+        case CellType.FLOOR:         return CellGraphics(ctCharacter!'ˑ', rgb(70, 70, 80), rgb(30, 30, 40));
+        case CellType.DOOR:   return CellGraphics(ctCharacter!'Π', rgb(200, 200, 200), rgb(35, 12, 12));
     }
 }
 

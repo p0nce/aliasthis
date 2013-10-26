@@ -75,8 +75,8 @@ public:
             }
 
             // clear the console
-            _console.setForegroundColor(color(0, 0, 0));
-            _console.setBackgroundColor(color(0, 0, 0));
+            _console.setForegroundColor(rgba(0, 0, 0, 0));
+            _console.setBackgroundColor(rgb(0, 0, 0));
             _console.clear();
 
             // draw current state

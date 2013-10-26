@@ -10,9 +10,14 @@ public import gfm.math.vector,
               gfm.math.simplerng;
 
 
-vec3ub color(int r, int g, int b) pure nothrow
+vec3ub rgb(int r, int g, int b) pure nothrow
 {
     return vec3ub(cast(ubyte)r, cast(ubyte)g, cast(ubyte)b);
+}
+
+vec4ub rgba(int r, int g, int b, int a) pure nothrow
+{
+    return vec4ub(cast(ubyte)r, cast(ubyte)g, cast(ubyte)b, cast(ubyte)a);
 }
 
 vec3ub lerpColor(vec3ub a, vec3ub b, float t) pure nothrow

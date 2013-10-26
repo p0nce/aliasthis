@@ -40,6 +40,9 @@ class WorldState
 
         void draw(Console console)
         {
+            int offset_x = 0;
+            int offset_y = 0;
+
             int levelToDisplay = _human.position.z;
             for (int y = 0; y < GRID_HEIGHT; ++y)
             {
@@ -55,8 +58,8 @@ class WorldState
                     {
                         Cell* cell = _grid.cell(vec3i(x, y, z));
 
-                        int cx = 15 + x;
-                        int cy = 1 + y;
+                        int cx = offset_x + x;
+                        int cy = offset_y + y;
 
                         CellGraphics gr = cell.graphics;
 
@@ -74,15 +77,18 @@ class WorldState
 
             // put players
             {
-                int cx = _human.position.x + 15;
-                int cy = _human.position.y + 1;
+                int cx = _human.position.x + offset_x;
+                int cy = _human.position.y + offset_y;
 
                 Cell* cell = _grid.cell(vec3i(_human.position.x, _human.position.y, levelToDisplay));
                 CellGraphics gr = cell.graphics;
                 console.setBackgroundColor(mulColor(gr.backgroundColor, 0.95f));
-                console.setForegroundColor(color(223, 105, 71));
+                console.setForegroundColor(rgb(223, 105, 71));
                 console.putChar(cx, cy, ctCharacter!'Ѭ');
             }
+
+
+            // 
         }
 
         // make things move

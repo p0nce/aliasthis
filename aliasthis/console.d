@@ -13,7 +13,7 @@ public import aliasthis.utils;
 struct Glyph
 {
     ubyte fontIndex;
-    vec3ub foregroundColor;
+    vec4ub foregroundColor;
     vec3ub backgroundColor;
 }
 
@@ -38,7 +38,7 @@ class Console
             SDL_DisableScreenSaver();
 
             // TODO: choose the right display
-            vec2i initialWindowSize = vec2i(1280,720);
+            vec2i initialWindowSize = vec2i(1366, 768);
 
             // get resolution
             _window = new Window(_sdl2, this, initialWindowSize.x, initialWindowSize.y);
@@ -79,6 +79,10 @@ class Console
         void toggleFullscreen()
         {
              _isFullscreen = !_isFullscreen;
+            if (_isFullscreen)
+            {
+                _window.maximize();
+            }
             _window.setFullscreen(_isFullscreen);
             updateFont();
         }
@@ -94,6 +98,12 @@ class Console
         }
 
         void setForegroundColor(vec3ub fg)
+        {
+            ubyte alpha = 255;
+            setForegroundColor(vec4ub(fg.x, fg.y, fg.z, alpha));
+        }
+
+        void setForegroundColor(vec4ub fg)
         {
             _foregroundColor = fg;
         }
@@ -142,7 +152,6 @@ class Console
                 for (int i = 0; i < _width; ++i)
                 {
                     Glyph g = glyph(i, j);
-                    box2i fontRect = glyphRect(g.fontIndex);
                     int destX = _consoleOffsetX + i * _fontWidth;
                     int destY = _consoleOffsetY + j * _fontHeight;
                     box2i destRect = box2i(destX, destY, destX + _fontWidth, destY + _fontHeight);
@@ -150,8 +159,20 @@ class Console
                     _renderer.setColor(g.backgroundColor.x, g.backgroundColor.y, g.backgroundColor.z, 255);
                     _renderer.fillRect(destRect);
                     
-                    _fontTexture.setColorMod(g.foregroundColor.x, g.foregroundColor.y, g.foregroundColor.z);
-                    _renderer.copy(_fontTexture, fontRect, destRect);
+                    // optimization: skip index 0 (space)
+                    if (g.fontIndex == 0)
+                        continue;
+
+                    // draw glyph
+                    {
+                        ubyte alpha = g.foregroundColor.w;
+                        if (alpha == 255)
+                            alpha = 254;
+                        _fontTexture.setAlphaMod(alpha);
+                        box2i fontRect = glyphRect(g.fontIndex);
+                        _fontTexture.setColorMod(g.foregroundColor.x, g.foregroundColor.y, g.foregroundColor.z);
+                        _renderer.copy(_fontTexture, fontRect, destRect);
+                    }
                 }
             
             _renderer.present();
@@ -178,7 +199,7 @@ class Console
         string _gameDir;
 
         // currentl colors
-        vec3ub _foregroundColor;
+        vec4ub _foregroundColor;
         vec3ub _backgroundColor;
 
         int _fontWidth;

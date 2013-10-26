@@ -41,8 +41,8 @@ class StateMainMenu : State
 public:
     override void draw(Console console, double dt)
     {
-        console.setBackgroundColor(color(0, 0, 0));
-        console.setForegroundColor(color(255, 255, 255));
+        console.setBackgroundColor(rgb(0, 0, 0));
+        console.setForegroundColor(rgba(255, 255, 255, 255));
         console.putText(1, 1, "StateMainMenu");
     }
 
