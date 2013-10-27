@@ -30,10 +30,10 @@ void main(string[] args)
 
         // create new game and play it
 
-        int width = 91;
-        int height = 32;
+        enum CONSOLE_WIDTH = 91;
+        enum CONSOLE_HEIGHT = 32;
 
-        auto console = scoped!Console(sdl2, log, gameDir, width, height);
+        auto console = scoped!Console(sdl2, log, gameDir, CONSOLE_WIDTH, CONSOLE_HEIGHT);
 
         auto stateMachine = scoped!StateMachine(sdl2, console);
         stateMachine.mainLoop();
