@@ -14,16 +14,25 @@ enum CommandType
 // Considering a WorldState, a Command executes into a ChangeSet.
 // A successful ChangeSet can be applied or not to the WorldState.
 // A command SHOULD be able to be asked to any Entity.
+// Need to be small and serializable.
 struct Command
 {
     CommandType type;
-    vec3i movement;
+
+    union Params
+    {
+        CommandParamsMove move;
+        CommandParamsWait wait;
+    } 
+
+    Params params;
+
 
     static Command createMovement(Direction dir)
     {
         Command res;
         res.type = CommandType.MOVE;
-        res.movement = getDirection(dir);
+        res.params.move.direction = dir;
         return res;
     }
 
@@ -33,4 +42,30 @@ struct Command
         res.type = CommandType.WAIT;
         return res;
     }
+
+    ubyte[] serialize()
+    {
+        ubyte res[];
+        res ~= cast(ubyte)type;
+        final switch(type)
+        {
+            case CommandType.MOVE:
+                res ~= cast(ubyte)params.move.direction;
+                break;
+
+            case CommandType.WAIT:
+                break;
+        }
+        return res;
+    }
 }
+
+struct CommandParamsMove
+{
+    Direction direction;
+}
+
+struct CommandParamsWait
+{
+}
+

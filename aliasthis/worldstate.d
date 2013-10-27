@@ -111,7 +111,7 @@ class WorldState
 
                 case CommandType.MOVE:
                     
-                    vec3i movement = command.movement;
+                    vec3i movement = getDirection(command.params.move.direction);
                     vec3i oldPos = _human.position;
                     vec3i newPos = _human.position + movement;
 

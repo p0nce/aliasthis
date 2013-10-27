@@ -7,7 +7,12 @@ import gfm.core.queue;
 import aliasthis.console,
        aliasthis.command,
        aliasthis.change,
+       aliasthis.serialize,
        aliasthis.worldstate;
+
+// bump version number to make the save files incompatible
+enum ALIASTHIS_MAJOR_VERSION = 0,
+     ALIASTHIS_MINOR_VERSION = 1;
 
 // Holds the game state and how we got there.
 // 
@@ -16,9 +21,11 @@ class Game
 public:
     enum NUM_BUFFERED_MESSAGES = 100;
 
+    // create a new game
     this(uint initialSeed)
     {
         rng.seed(initialSeed);
+        _initialSeed = initialSeed;
         _worldState = WorldState.createNewWorld(rng);
         _changeLog = [];
         _commandLog = [];
@@ -43,7 +50,6 @@ public:
         console.setBackgroundColor(rgb(0, 0, 0));
         console.setForegroundColor(rgba(255, 255, 255, 255));
         console.putText(0, console.height - 1, _messageLog.front());
-
     }
 
     void executeCommand(Command command)
@@ -75,13 +81,27 @@ public:
         }
     }
 
+    // save seed + sequence of commands
+    // is enough to recreate game state
+    ubyte[] saveGame()
+    {
+        // header
+        ubyte[] save = serialize("Aliasthis-Savefile\n");
+        save ~= serialize(format("version %d.%d\n", ALIASTHIS_MAJOR_VERSION, ALIASTHIS_MINOR_VERSION));
 
+        save ~= serialize(cast(uint)_commandLog.length);
+        foreach (ref command ; _commandLog)
+        {
+            save ~= command.serialize();
+        }
+        return save;
+    }
 
 private:
     Xorshift rng;
-    int initialSeed;
+    uint _initialSeed;
     WorldState _worldState;
     Change[] _changeLog;
     Command[] _commandLog;
-    RingBuffer!string _messageLog;
+    RingBuffer!string _messageLog;   
 }

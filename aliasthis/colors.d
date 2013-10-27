@@ -28,6 +28,14 @@ vec3ub lerpColor(vec3ub a, vec3ub b, float t) pure nothrow
     return cast(vec3ub)(0.5f + of);
 }
 
+vec4ub lerpColor(vec4ub a, vec4ub b, float t) pure nothrow
+{
+    vec4f af = cast(vec4f)a;
+    vec4f bf = cast(vec4f)b;
+    vec4f of = af * (1 - t) + bf * t;
+    return cast(vec4ub)(0.5f + of);
+}
+
 vec3ub mulColor(vec3ub color, float amount) pure nothrow
 {
     vec3f fcolor = cast(vec3f)color / 255.0f;
@@ -58,6 +66,11 @@ vec3ub colorFog(vec3ub color, int levelDifference) pure nothrow
     return cast(vec3ub)(0.5f + foggy * 255.0f);
 }
 
+vec4ub colorFog(vec4ub color, int levelDifference) pure nothrow
+{
+    return vec4ub(colorFog(color.xyz, levelDifference), color.w);
+}
+
 // gaussian color SV perturbation
 vec3ub perturbColorSV(vec3ub color, float Samount, float Vamount, ref Xorshift rng)
 {
@@ -72,6 +85,11 @@ vec3ub perturbColorSV(vec3ub color, float Samount, float Vamount, ref Xorshift r
 
     vec3f rgb = hsv2rgb(hsv);
     return cast(vec3ub)(0.5f + rgb * 255.0f);
+}
+
+vec4ub perturbColorSV(vec4ub color, float Samount, float Vamount, ref Xorshift rng)
+{
+    return vec4ub(perturbColorSV(color.xyz, Samount, Vamount, rng), color.w);
 }
 
 // Credits: Sam Hocevar 
