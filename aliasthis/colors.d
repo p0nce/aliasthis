@@ -43,6 +43,11 @@ vec3ub mulColor(vec3ub color, float amount) pure nothrow
     return cast(vec3ub)(0.5f + fcolor * 255.0f);
 }
 
+vec4ub mulColor(vec4ub color, float amount) pure nothrow
+{
+    return vec4ub(mulColor(color.xyz, amount), color.w);
+}
+
 vec3ub colorFog(vec3ub color, int levelDifference) pure nothrow
 {
     assert(levelDifference >= 0);

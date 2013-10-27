@@ -68,7 +68,7 @@ class WorldState
                         {
                             int levelDiff = levelToDisplay - lowest;
                             console.setForegroundColor(colorFog(gr.foregroundColor, levelDiff));
-                            console.setBackgroundColor(colorFog(gr.backgroundColor, levelDiff));
+                            console.setBackgroundColor(vec4ub(colorFog(gr.backgroundColor, levelDiff), cast(ubyte)255));
                             console.putChar(cx, cy, gr.charIndex);
                         }
                     }
@@ -82,7 +82,7 @@ class WorldState
 
                 Cell* cell = _grid.cell(vec3i(_human.position.x, _human.position.y, levelToDisplay));
                 CellGraphics gr = cell.graphics;
-                console.setBackgroundColor(mulColor(gr.backgroundColor, 0.95f));
+                console.setBackgroundColor(vec4ub(mulColor(gr.backgroundColor, 0.95f), cast(ubyte)255));
                 console.setForegroundColor(rgb(223, 105, 71));
                 console.putChar(cx, cy, ctCharacter!'Ѭ');
             }

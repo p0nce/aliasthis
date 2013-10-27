@@ -20,7 +20,7 @@ public:
     {
         _sdl2 = sdl2;
         _console = console;    
-        _state = new StatePlay(0);
+        _state = new StateMainMenu();
         _frameCounter = new FrameCounter(sdl2);
     }
 
@@ -52,8 +52,14 @@ public:
                     switch (event.type)
                     {
                         case SDL_KEYDOWN:
-                            newState = _state.handleKeypress(event.key.keysym);   
+                        {
+                            auto key = event.key.keysym;
+                            if (key.sym == SDLK_RETURN && ((key.mod & KMOD_ALT) != 0))
+                                _console.toggleFullscreen();
+                            else
+                                newState = _state.handleKeypress(key);   
                             break;
+                        }
 
                         default:
                             break;
@@ -63,8 +69,6 @@ public:
                     {
                         if (cast(StateExit)newState !is null)
                             finished = true;
-                        else if (cast(StateToggleFullscreen)newState !is null)
-                            _console.toggleFullscreen();
                         else
                         {
                             _state = newState;
@@ -75,8 +79,8 @@ public:
             }
 
             // clear the console
-            _console.setForegroundColor(rgba(0, 0, 0, 0));
-            _console.setBackgroundColor(rgb(0, 0, 0));
+            _console.setForegroundColor(rgba(0, 0, 0, 255));
+            _console.setBackgroundColor(rgba(0, 0, 0, 255));
             _console.clear();
 
             // draw current state

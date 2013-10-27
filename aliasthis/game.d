@@ -47,7 +47,7 @@ public:
         _worldState.draw(console);
 
         // draw last log line
-        console.setBackgroundColor(rgb(0, 0, 0));
+        console.setBackgroundColor(rgba(0, 0, 0, 255));
         console.setForegroundColor(rgba(255, 255, 255, 255));
         console.putText(0, console.height - 1, _messageLog.front());
     }

@@ -7,14 +7,20 @@ import gfm.core.all,
        gfm.sdl2.all,
        gfm.math.all;
 
-import aliasthis.chartable;
-public import aliasthis.utils;
+public import aliasthis.chartable,
+              aliasthis.utils;
 
 struct Glyph
 {
     ubyte fontIndex;
     vec4ub foregroundColor;
     vec3ub backgroundColor;
+}
+
+enum 
+{
+    BG_OP_SET = 0,
+    BG_OP_KEEP = 1
 }
 
 class Console
@@ -108,7 +114,7 @@ class Console
             _foregroundColor = fg;
         }
 
-        void setBackgroundColor(vec3ub bg)
+        void setBackgroundColor(vec4ub bg)
         {
             _backgroundColor = bg;
         }
@@ -119,7 +125,7 @@ class Console
             {
                 g.fontIndex = 0;
                 g.foregroundColor = _foregroundColor;
-                g.backgroundColor = _backgroundColor;
+                g.backgroundColor = _backgroundColor.xyz;
             }
         }
 
@@ -128,9 +134,13 @@ class Console
             if (cx < 0 || cx >= _width || cy < 0 || cy >= _height)
                 return;
 
-            glyph(cx, cy).fontIndex = cast(ubyte)fontIndex;
-            glyph(cx, cy).foregroundColor = _foregroundColor;
-            glyph(cx, cy).backgroundColor = _backgroundColor;
+            Glyph* g = &glyph(cx, cy);
+
+            g.fontIndex = cast(ubyte)fontIndex;
+            g.foregroundColor = _foregroundColor; // do not consider alpha, will be composited at render time
+
+            if (_backgroundColor.w != 0)
+                g.backgroundColor = lerpColor(g.backgroundColor, _backgroundColor.xyz, _backgroundColor.w / 255.0f);            
         }
 
         void putText(int cx, int cy, string text)
@@ -198,9 +208,9 @@ class Console
         bool _isFullscreen;
         string _gameDir;
 
-        // currentl colors
+        // current colors
         vec4ub _foregroundColor;
-        vec3ub _backgroundColor;
+        vec4ub _backgroundColor;
 
         int _fontWidth;
         int _fontHeight;
