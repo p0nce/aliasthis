@@ -86,9 +86,6 @@ class WorldState
                 console.setForegroundColor(rgb(223, 105, 71));
                 console.putChar(cx, cy, ctCharacter!'Ѭ');
             }
-
-
-            // 
         }
 
         // make things move

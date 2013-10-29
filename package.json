@@ -11,7 +11,9 @@
     "dependencies": {
         "gfm:core": "~master",
         "gfm:math": "~master",
-        "gfm:sdl2": "~master"
+		"gfm:image": "~master",
+        "gfm:sdl2": "~master",
+        "msgpack-d": "~master"
     }
 }
 

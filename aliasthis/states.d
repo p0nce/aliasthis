@@ -175,54 +175,62 @@ public:
         }
         else if (key.sym == SDLK_LEFT || key.sym == SDLK_KP_4)
         {
-            _game.message("You go west");
+            _game.message("You go west.");
             commands ~= Command.createMovement(Direction.WEST);
         }
         else if (key.sym == SDLK_RIGHT || key.sym == SDLK_KP_6)
         {
-            _game.message("You go east");
+            _game.message("You go east.");
             commands ~= Command.createMovement(Direction.EAST);
         }
         else if (key.sym == SDLK_UP || key.sym == SDLK_KP_8)
         {
-            _game.message("You go north");
+            _game.message("You go north.");
             commands ~= Command.createMovement(Direction.NORTH);
         }
         else if (key.sym == SDLK_DOWN || key.sym == SDLK_KP_2)
         {
-            _game.message("You go south");
+            _game.message("You go south.");
             commands ~= Command.createMovement(Direction.SOUTH);
         }
         else if (key.sym == SDLK_KP_7)
         {
+            _game.message("You go north-west.");
             commands ~= Command.createMovement(Direction.NORTH_WEST);
         }
         else if (key.sym == SDLK_KP_9)
         {
+            _game.message("You go north-east.");
             commands ~= Command.createMovement(Direction.NORTH_EAST);
         }
         else if (key.sym == SDLK_KP_1)
         {
+            _game.message("You go south-west.");
             commands ~= Command.createMovement(Direction.SOUTH_WEST);
         }
         else if (key.sym == SDLK_KP_3)
         {
+            _game.message("You go south-east.");
             commands ~= Command.createMovement(Direction.SOUTH_EAST);
         }
         else if (key.sym == SDLK_KP_5 || key.sym == SDLK_SPACE)
         {
+            _game.message("You wait a moment.");
             commands ~= Command.createWait();
         }
         else if (key.sym == SDLK_LESS)
         {
+            _game.message("You go downstairs.");
             commands ~= Command.createMovement(Direction.ABOVE);
         }
         else if (key.sym == SDLK_GREATER)
         {
+            _game.message("You go upstairs.");
             commands ~= Command.createMovement(Direction.BELOW);
         }
         else if (key.sym == SDLK_u)
         {
+
             _game.undo();          
         }
 

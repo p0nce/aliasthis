@@ -2,17 +2,29 @@ module aliasthis.game;
 
 import std.random;
 
+import msgpack;
+
 import gfm.core.queue;
 
 import aliasthis.console,
        aliasthis.command,
+       aliasthis.config,
        aliasthis.change,
        aliasthis.serialize,
        aliasthis.worldstate;
 
-// bump version number to make the save files incompatible
-enum ALIASTHIS_MAJOR_VERSION = 0,
-     ALIASTHIS_MINOR_VERSION = 1;
+
+struct SaveFile
+{
+    string magic;
+    ubyte majorVersion;
+    ubyte minorVersion;
+    uint seed;
+    uint commandLength;
+    ubyte[] commandLog; // commands bytecode
+}
+
+string SAVE_MAGIC_STRING = "ATSave";
 
 // Holds the game state and how we got there.
 // 
@@ -35,6 +47,38 @@ public:
             _messageLog.pushBack("");
     }    
 
+    // restore a game from a save
+    this(ubyte[] binarySave)
+    {
+        // save seed + sequence of commands
+        // is enough to recreate game state
+        try
+        {
+            SaveFile s;
+            msgpack.unpack(binarySave, s);
+
+            if (s.magic != SAVE_MAGIC_STRING)
+                throw new AliasthisException("Invalid save file");
+
+            if (s.majorVersion != ALIASTHIS_MAJOR_VERSION)
+                throw new AliasthisException("Can't load this save file: different major versions");
+
+            if (s.minorVersion != ALIASTHIS_MINOR_VERSION)
+                throw new AliasthisException("Can't load this save file: different minor versions");
+
+            // create the game anew
+            this(s.seed);
+
+            // replay all commands :) can be very slow
+
+            assert(0); // TODO
+        }
+        catch(MessagePackException e)
+        {
+            throw new AliasthisException(e.msg);
+        }
+    }
+
     // enqueue a game log message
     void message(string m)
     {
@@ -46,10 +90,13 @@ public:
         _worldState.estheticUpdate(dt);
         _worldState.draw(console);
 
-        // draw last log line
+        // draw last 3 log line
         console.setBackgroundColor(rgba(0, 0, 0, 255));
         console.setForegroundColor(rgba(255, 255, 255, 255));
-        console.putText(0, console.height - 1, _messageLog.front());
+        for (int i = 0; i < 3; ++i)
+        {
+            console.putText(1, console.height - 3 + i, _messageLog[i]);
+        }
     }
 
     void executeCommand(Command command)
@@ -85,16 +132,13 @@ public:
     // is enough to recreate game state
     ubyte[] saveGame()
     {
-        // header
-        ubyte[] save = serialize("Aliasthis-Savefile\n");
-        save ~= serialize(format("version %d.%d\n", ALIASTHIS_MAJOR_VERSION, ALIASTHIS_MINOR_VERSION));
-
-        save ~= serialize(cast(uint)_commandLog.length);
-        foreach (ref command ; _commandLog)
+        ubyte[] commands;
+        foreach(ref command; _commandLog)
         {
-            save ~= command.serialize();
+            commands ~= command.serialize();
         }
-        return save;
+
+        return msgpack.pack(SaveFile(SAVE_MAGIC_STRING, ALIASTHIS_MAJOR_VERSION, ALIASTHIS_MINOR_VERSION, _initialSeed, _commandLog.length, commands));
     }
 
 private:
