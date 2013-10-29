@@ -15,6 +15,12 @@ import aliasthis.console,
 // base class for states
 class State
 {
+public:
+    this(Console console)
+    {
+        _console = console;
+    }
+
     void close()
     {
     }
@@ -25,17 +31,14 @@ class State
         return this; // default -> do nothing
     }
 
-    void draw(Console console, double dt)
+    void draw(double dt)
     {
         // default: do nothing
     }
-}
 
-// terminal state, special value
-class StateExit : State
-{
+protected:
+    Console _console;
 }
-
 
 class Menu
 {
@@ -113,6 +116,7 @@ public:
 
     this(Console console)
     {
+        super(console);
         _menu = new Menu( [
             "New game",
             "Load game",
@@ -130,10 +134,14 @@ public:
 
     override void close()
     {
-        _splash.close();
+        if (_splash !is null)
+        {
+            _splash.close();
+            _splash = null;
+        }
     }
 
-    override void draw(Console console, double dt)
+    override void draw(double dt)
     {
         void getCharStyle(int x, int y, out int charIndex, out vec4ub fgColor)
         {
@@ -155,17 +163,17 @@ public:
             }
         }
 
-        console.putImage(0, 0, _splash, &getCharStyle);
+        _console.putImage(0, 0, _splash, &getCharStyle);
 
         
-        _menu.draw(55, 19, console);
+        _menu.draw(55, 19, _console);
     }
 
     override State handleKeypress(SDL_Keysym key)
     {
         // quit without confirmation
         if (key.sym == SDLK_ESCAPE)
-            return new StateExit();
+            return null;
         else if (key.sym == SDLK_UP)
             _menu.up();
         else if (key.sym == SDLK_DOWN)
@@ -173,7 +181,7 @@ public:
         else if (key.sym == SDLK_RETURN)
         {
             if (_menu.index() == 0) // new game
-                return new StatePlay(unpredictableSeed);
+                return new StatePlay(_console, unpredictableSeed);
             else if (_menu.index() == 1) // load game
             {
             }
@@ -182,7 +190,7 @@ public:
             }
             else if (_menu.index() == 3) // quit
             {
-                return new StateExit();
+                return null;
             }
         }
 
@@ -194,15 +202,16 @@ class StatePlay : State
 {
 public:
 
-    this(uint initialSeed)
+    this(Console console, uint initialSeed)
     {
+        super(console);
         _game = new Game(initialSeed);
         _game.message("You entered the crypt of Aliasthis");
     }    
 
-    override void draw(Console console, double dt)
+    override void draw(double dt)
     {
-        _game.draw(console, dt);
+        _game.draw(_console, dt);
 
         // TODO hud
     }
@@ -212,7 +221,7 @@ public:
         Command[] commands;
         if (key.sym == SDLK_ESCAPE)
         {
-            return new StateExit();
+            return new StateMainMenu(_console);
         }
         else if (key.sym == SDLK_LEFT || key.sym == SDLK_KP_4)
         {

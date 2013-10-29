@@ -46,10 +46,6 @@ public:
             if (_console.isClosed())
                 finished = true;
 
-            // terminal state
-            if (cast(StateExit)_state !is null)
-                finished = true;            
-
             if (finished)
                 break;
 
@@ -58,7 +54,7 @@ public:
                 SDL_Event event;
                 while (_sdl2.pollEvent(&event))
                 {
-                    State newState = null;
+                    State newState = _state;
                     switch (event.type)
                     {
                         case SDL_KEYDOWN:
@@ -75,9 +71,8 @@ public:
                             break;
                     }
 
-                    if (newState !is null)
                     {
-                        if (cast(StateExit)newState !is null)
+                        if (newState is null)
                             finished = true;
                         else
                         {
@@ -101,7 +96,7 @@ public:
             // draw current state
             ulong deltaMs = _frameCounter.tickMs();
             double dt = deltaMs / 1000.0;
-            _state.draw(_console, dt);
+            _state.draw(dt);
 
             _console.flush();
 /*
