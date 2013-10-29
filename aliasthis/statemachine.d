@@ -1,6 +1,7 @@
 module aliasthis.statemachine;
 
-import std.random; 
+import std.random,
+       std.typecons;
 
 import gfm.sdl2.all,
        gfm.math.all;
@@ -16,12 +17,21 @@ immutable int POLL_DELAY = 35;
 class StateMachine
 {
 public:
-    this(SDL2 sdl2, Console console)
+    this(SDL2 sdl2, string gameDir, Console console)
     {
         _sdl2 = sdl2;
         _console = console;    
-        _state = new StateMainMenu();
+        _state = new StateMainMenu(console);
         _frameCounter = new FrameCounter(sdl2);
+    }
+
+    ~this()
+    {
+        if (_state !is null)
+        {
+            _state.close();
+            _state = null;
+        }
     }
 
     void mainLoop()
@@ -71,7 +81,12 @@ public:
                             finished = true;
                         else
                         {
-                            _state = newState;
+                            if (newState != _state)
+                            {
+                                if (_state !is null)
+                                    _state.close();
+                                _state = newState;
+                            }
                         }
                     }
                 }

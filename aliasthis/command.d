@@ -3,6 +3,8 @@ module aliasthis.command;
 import aliasthis.utils;
 public import aliasthis.grid;
 
+import msgpack;
+
 enum CommandType 
 {
     MOVE,
@@ -45,15 +47,15 @@ struct Command
 
     ubyte[] serialize()
     {
-        ubyte res[];
-        res ~= cast(ubyte)type;
+        ubyte res[] = pack(type);
         final switch(type)
         {
             case CommandType.MOVE:
-                res ~= cast(ubyte)params.move.direction;
+                res ~= pack(params.move);
                 break;
 
             case CommandType.WAIT:
+                res ~= pack(params.wait);
                 break;
         }
         return res;

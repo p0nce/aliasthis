@@ -21,7 +21,7 @@ void main(string[] args)
        
         auto sdl2 = scoped!SDL2(log);
         auto console = scoped!Console(sdl2, log, gameDir, CONSOLE_WIDTH, CONSOLE_HEIGHT);
-        auto stateMachine = scoped!StateMachine(sdl2, console);
+        auto stateMachine = scoped!StateMachine(sdl2, gameDir, console);
         stateMachine.mainLoop();
     }
     catch(Exception e)

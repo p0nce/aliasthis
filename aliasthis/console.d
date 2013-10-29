@@ -149,6 +149,33 @@ class Console
                 putChar(cx + i, cy, character(ch));
         }
 
+        void putImage(int cx, int cy, SDL2Surface surface)
+        {
+            surface.lock();
+            scope(exit) surface.unlock();
+
+            int w = surface.width();
+            int h = surface.height();
+
+            for(int y = 0; y < h; ++y)
+            {
+                for(int x = 0; x < w; ++x)
+                {
+                    vec4ub color = surface.getRGBA(x, y);
+                    Glyph* g = &glyph(x + cx, y + cy);
+                    g.fontIndex = 0;
+                    g.foregroundColor = rgba(0, 0, 0, 0);
+                    g.backgroundColor = color.xyz;
+                }
+            }
+        }
+
+        SDL2Surface loadImage(string relPath)
+        {
+            string fullPath = buildNormalizedPath(_gameDir, relPath);
+            return _sdlImage.load(fullPath);
+        }
+
         void flush()
         {     
             _renderer.setViewportFull();

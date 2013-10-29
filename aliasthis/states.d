@@ -7,6 +7,7 @@ import gfm.sdl2.all,
 
 import aliasthis.console,
        aliasthis.utils,
+       aliasthis.config,
        aliasthis.command,
        aliasthis.game;
 
@@ -14,6 +15,10 @@ import aliasthis.console,
 // base class for states
 class State
 {
+    void close()
+    {
+    }
+
     // handle keypress, return next State
     State handleKeypress(SDL_Keysym key)
     {
@@ -102,10 +107,11 @@ class StateMainMenu : State
 {
 private:
     Menu _menu;
+    SDL2Surface _splash;
 
 public:
 
-    this()
+    this(Console console)
     {
         _menu = new Menu( [
             "New game",
@@ -113,11 +119,24 @@ public:
             "View recording",
             "Quit"
         ] );
+
+        _splash = console.loadImage("data/mainmenu.png");
     }   
+
+    ~this()
+    {
+        close();
+    }
+
+    override void close()
+    {
+        _splash.close();
+    }
 
     override void draw(Console console, double dt)
     {
-        _menu.draw(30, 20, console);        
+        console.putImage(0, 0, _splash);
+        _menu.draw(CONSOLE_WIDTH/2 - 9, CONSOLE_HEIGHT/2 - 2, console);        
     }
 
     override State handleKeypress(SDL_Keysym key)
