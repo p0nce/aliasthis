@@ -149,7 +149,7 @@ class Console
                 putChar(cx + i, cy, character(ch));
         }
 
-        void putImage(int cx, int cy, SDL2Surface surface)
+        void putImage(int cx, int cy, SDL2Surface surface, void delegate(int x, int y, out int charIndex, out vec4ub fgColor) getCharStyle)
         {
             surface.lock();
             scope(exit) surface.unlock();
@@ -163,9 +163,13 @@ class Console
                 {
                     vec4ub color = surface.getRGBA(x, y);
                     Glyph* g = &glyph(x + cx, y + cy);
-                    g.fontIndex = 0;
-                    g.foregroundColor = rgba(0, 0, 0, 0);
+
+                    int charIndex;
+                    vec4ub fg;
+                    getCharStyle(x, y, charIndex, fg);
                     g.backgroundColor = color.xyz;
+                    g.foregroundColor = fg;
+                    g.fontIndex = cast(ubyte)charIndex;
                 }
             }
         }

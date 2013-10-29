@@ -68,10 +68,10 @@ public:
 
     void draw(int posx, int posy, Console console)
     {
-        vec4ub bgSelected = rgba(32, 32, 15, 255);
-        vec4ub bgNormal = rgba(9, 9, 15, 255);
+        vec4ub bgSelected = rgba(110, 18, 27, 255);
+        vec4ub bgNormal = rgba(6, 6, 10, 128);
         for (int y = -1; y < cast(int)_items.length + 1; ++y)
-            for (int x = -1; x < cast(int)_maxLength + 1; ++x)
+            for (int x = -2; x < cast(int)_maxLength + 2; ++x)
             {
                 if (y == _select)
                     console.setBackgroundColor(bgSelected);
@@ -85,11 +85,11 @@ public:
         {
             if (y == _select)
             {
-                console.setForegroundColor(rgba(255, 128, 128, 255));
+                console.setForegroundColor(rgba(255, 255, 255, 255));
             }
             else
             {
-                console.setForegroundColor(rgba(255, 255, 255, 255));
+                console.setForegroundColor(rgba(255, 182, 172, 255));
             }
             console.setBackgroundColor(rgba(255, 255, 255, 0));
             int offset = posx + (_maxLength - _items[y].length)/2;
@@ -135,8 +135,30 @@ public:
 
     override void draw(Console console, double dt)
     {
-        console.putImage(0, 0, _splash);
-        _menu.draw(CONSOLE_WIDTH/2 - 9, CONSOLE_HEIGHT/2 - 2, console);        
+        void getCharStyle(int x, int y, out int charIndex, out vec4ub fgColor)
+        {
+            Xorshift rng;
+            rng.seed(x + y * 80);
+            int ij = uniform(0, 16, rng);
+            int ci = (9 * 16 + 14);
+            if (ij < 7)/*
+            if (x % 2 == 0 && y % 2 == 0)*/ ci = (6 * 16 + 14);
+            if (ij < 2)/*
+            if (x % 4 == 0 && y % 4 == 0)*/ ci = (6 * 16 + 12);
+            
+            fgColor = rgba(0, 0, 0, 235);
+            charIndex = (x < 32 /*&& y > 0 && y + 1 < 32*/) ? ci : 0;
+            if (y == 0 || y == 31) 
+            {
+                charIndex = (6 * 16 + 14);
+                fgColor = rgba(0, 0, 0, 160);
+            }
+        }
+
+        console.putImage(0, 0, _splash, &getCharStyle);
+
+        
+        _menu.draw(55, 19, console);
     }
 
     override State handleKeypress(SDL_Keysym key)
