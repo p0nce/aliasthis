@@ -193,27 +193,50 @@ class Console
                 for (int i = 0; i < _width; ++i)
                 {
                     Glyph g = glyph(i, j);
-                    int destX = _consoleOffsetX + i * _fontWidth;
+                    vec3ub bg = g.backgroundColor;
+
+                    int k = i;
+                    while (true)
+                    {
+                        if (k + 1 >= _width)
+                            break;
+                        Glyph gNext = glyph(k + 1, j);
+                        if (bg != gNext.backgroundColor)
+                            break;
+                        k += 1;
+                    }
+
+                    int destX0 = _consoleOffsetX + i * _fontWidth;
+                    int destX1 = _consoleOffsetX + k * _fontWidth;
                     int destY = _consoleOffsetY + j * _fontHeight;
-                    box2i destRect = box2i(destX, destY, destX + _fontWidth, destY + _fontHeight);
+                    box2i destRect = box2i(destX0, destY, destX1 + _fontWidth, destY + _fontHeight);
+
+                    i = k;
 
                     _renderer.setColor(g.backgroundColor.x, g.backgroundColor.y, g.backgroundColor.z, 255);
                     _renderer.fillRect(destRect);
+                }
+
+            // draw glyphs
+            for (int j = 0; j < _height; ++j)
+                for (int i = 0; i < _width; ++i)
+                {
+                    Glyph g = glyph(i, j);
+                    int destX = _consoleOffsetX + i * _fontWidth;
+                    int destY = _consoleOffsetY + j * _fontHeight;
+                    box2i destRect = box2i(destX, destY, destX + _fontWidth, destY + _fontHeight);
                     
                     // optimization: skip index 0 (space)
                     if (g.fontIndex == 0)
                         continue;
 
-                    // draw glyph
-                    {
-                        ubyte alpha = g.foregroundColor.w;
-                        if (alpha == 255)
-                            alpha = 254;
-                        _fontTexture.setAlphaMod(alpha);
-                        box2i fontRect = glyphRect(g.fontIndex);
-                        _fontTexture.setColorMod(g.foregroundColor.x, g.foregroundColor.y, g.foregroundColor.z);
-                        _renderer.copy(_fontTexture, fontRect, destRect);
-                    }
+                    ubyte alpha = g.foregroundColor.w;
+                    if (alpha == 255)
+                        alpha = 254;
+                    _fontTexture.setAlphaMod(alpha);
+                    box2i fontRect = glyphRect(g.fontIndex);
+                    _fontTexture.setColorMod(g.foregroundColor.x, g.foregroundColor.y, g.foregroundColor.z);
+                    _renderer.copy(_fontTexture, fontRect, destRect);
                 }
             
             _renderer.present();

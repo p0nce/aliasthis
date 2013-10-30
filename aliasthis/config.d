@@ -16,3 +16,9 @@ class AliasthisException : Exception
         super(message);
     }
 }
+
+enum GRID_NUM_CELLS = GRID_WIDTH * GRID_HEIGHT * GRID_DEPTH;
+
+enum GRID_WIDTH = 60;
+enum GRID_HEIGHT = 29;
+enum GRID_DEPTH = 20;

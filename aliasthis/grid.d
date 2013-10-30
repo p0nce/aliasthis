@@ -2,17 +2,13 @@ module aliasthis.grid;
 
 import gfm.math.all;
 
-import aliasthis.utils,
+import aliasthis.config,
+       aliasthis.utils,
        aliasthis.chartable,
        aliasthis.cell;
 
 // basically a big cube
 
-enum GRID_NUM_CELLS = GRID_WIDTH * GRID_HEIGHT * GRID_DEPTH;
-
-enum GRID_WIDTH = 60;
-enum GRID_HEIGHT = 29;
-enum GRID_DEPTH = 20;
 
 
 enum Direction

@@ -280,7 +280,6 @@ public:
         }
         else if (key.sym == SDLK_u)
         {
-
             _game.undo();          
         }
 

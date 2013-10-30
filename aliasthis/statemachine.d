@@ -90,7 +90,7 @@ public:
 
             // clear the console
             _console.setForegroundColor(rgba(0, 0, 0, 255));
-            _console.setBackgroundColor(rgba(0, 0, 0, 255));
+            _console.setBackgroundColor(rgba(7, 7, 12, 255));
             _console.clear();
 
             // draw current state

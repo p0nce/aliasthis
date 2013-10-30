@@ -91,11 +91,17 @@ public:
         _worldState.draw(console);
 
         // draw last 3 log line
-        console.setBackgroundColor(rgba(0, 0, 0, 255));
-        console.setForegroundColor(rgba(255, 255, 255, 255));
-        for (int i = 0; i < 3; ++i)
+
+
+        static immutable int[3] transp = [255, 128, 64];
+        for (int y = 0; y < 3; ++y)
         {
-            console.putText(1, console.height - 3 + i, _messageLog[i]);
+            console.setBackgroundColor(rgba(7, 7, 12, 255));
+            console.setForegroundColor(rgba(255, 220, 220, transp[y]));
+
+            for (int x = 0; x < GRID_WIDTH; ++x)
+                console.putChar(x, console.height - 3 + y, 0);
+            console.putText(1, console.height - 3 + y, _messageLog[y]);
         }
     }
 
