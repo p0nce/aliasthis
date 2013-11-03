@@ -40,8 +40,6 @@ public:
 
         while(true)
         {
-            uint timeBeforeInput = _sdl2.getTicks();
-
             // user clicked close, application was terminated, etc...
             if (_console.isClosed())
                 finished = true;
@@ -99,10 +97,6 @@ public:
             _state.draw(dt);
 
             _console.flush();
-/*
-            int waitMs = cast(int)(POLL_DELAY + (timeBeforeInput - _sdl2.getTicks()));
-            if (0 < waitMs && waitMs <= POLL_DELAY)
-                _sdl2.delay(waitMs);*/
         }
     }
 
