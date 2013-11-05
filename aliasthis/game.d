@@ -144,7 +144,7 @@ public:
             commands ~= command.serialize();
         }
 
-        return msgpack.pack(SaveFile(SAVE_MAGIC_STRING, ALIASTHIS_MAJOR_VERSION, ALIASTHIS_MINOR_VERSION, _initialSeed, _commandLog.length, commands));
+        return msgpack.pack(SaveFile(SAVE_MAGIC_STRING, ALIASTHIS_MAJOR_VERSION, ALIASTHIS_MINOR_VERSION, _initialSeed, cast(uint)_commandLog.length, commands));
     }
 
 private:

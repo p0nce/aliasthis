@@ -23,6 +23,8 @@ enum
     BG_OP_KEEP = 1
 }
 
+enum USE_SDL_IMAGE = true;
+
 class Console
 {
     public
@@ -37,7 +39,11 @@ class Console
             _width = width;
             _height = height;
             _sdl2 = sdl2;
-            _sdlImage = new SDLImage(_sdl2, IMG_INIT_PNG);
+
+            static if(USE_SDL_IMAGE)
+            {
+                _sdlImage = new SDLImage(_sdl2, IMG_INIT_PNG);
+            }
 
             _glyphs.length = _width * _height;
 
@@ -60,7 +66,11 @@ class Console
             _renderer.close();
             _font.close();
             _window.close();
-            _sdlImage.close();
+
+            static if (USE_SDL_IMAGE)
+            {
+                _sdlImage.close();
+            }
         }
 
         @property width()
@@ -174,10 +184,33 @@ class Console
             }
         }
 
-        SDL2Surface loadImage(string relPath)
+        static if (USE_SDL_IMAGE)
         {
-            string fullPath = buildNormalizedPath(_gameDir, relPath);
-            return _sdlImage.load(fullPath);
+            SDL2Surface loadImage(string relPath)
+            {
+                string fullPath = buildNormalizedPath(_gameDir, relPath);
+                return _sdlImage.load(fullPath);
+            }
+        }
+        else
+        {
+            import arsd.color;
+            import arsd.png;
+
+            SDL2Surface loadImage(string relPath)
+            {
+                string fullPath = buildNormalizedPath(_gameDir, relPath);
+                TrueColorImage img = readPng(fullPath).getAsTrueColorImage();
+                SDL2Surface surface = new SDL2Surface(_sdl2, 
+                                                      img.imageData.bytes.ptr,
+                                                      //img.data.ptr, 
+                                                      img.width(), 
+                                                      img.height(), 
+                                                      32, 
+                                                      img.width(),
+                                                      0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff);
+                return surface;
+            }
         }
 
         void flush()
@@ -251,7 +284,10 @@ class Console
     private
     {        
         SDL2 _sdl2;
-        SDLImage _sdlImage;
+        static if (USE_SDL_IMAGE)
+        {
+            SDLImage _sdlImage;
+        }
         Window _window;
         SDL2Surface _font;
         SDL2Renderer _renderer;
@@ -302,10 +338,9 @@ class Console
 
             // initialize custom font
             string fontPath = format("data/fonts/consola_%sx%s.png", _fontWidth, _fontHeight);
-            fontPath = buildNormalizedPath(gameDir, fontPath);
             if (_font !is null)
                 _font.close();
-            _font = _sdlImage.load(fontPath);
+            _font = loadImage(fontPath);
             assert(_font.width == _fontWidth * 16);
             assert(_font.height == _fontHeight * 16);
 

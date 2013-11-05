@@ -51,7 +51,7 @@ public:
         _maxLength = 0;
         for (size_t i = 0; i < items.length; ++i)
             if (_maxLength < items[i].length)
-                _maxLength = items[i].length;
+                _maxLength = cast(int)(items[i].length);
     }
 
     void up()
@@ -66,7 +66,7 @@ public:
 
     int index()
     {
-        return _select;
+        return cast(int)_select;
     }
 
     void draw(int posx, int posy, Console console)
@@ -74,7 +74,7 @@ public:
         vec4ub bgSelected = rgba(110, 18, 27, 255);
         vec4ub bgNormal = rgba(6, 6, 10, 128);
         for (int y = -1; y < cast(int)_items.length + 1; ++y)
-            for (int x = -2; x < cast(int)_maxLength + 2; ++x)
+            for (int x = -2; x < _maxLength + 2; ++x)
             {
                 if (y == _select)
                     console.setBackgroundColor(bgSelected);
@@ -95,14 +95,14 @@ public:
                 console.setForegroundColor(rgba(255, 182, 172, 255));
             }
             console.setBackgroundColor(rgba(255, 255, 255, 0));
-            int offset = posx + (_maxLength - _items[y].length)/2;
+            int offset = posx + (_maxLength - cast(int)_items[y].length)/2;
             console.putText(offset, posy + y, _items[y]);
         }        
     }
 
 private:
     string[] _items;
-    int _select;
+    size_t _select;
     int _maxLength;
 }
 
