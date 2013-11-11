@@ -24,7 +24,7 @@ struct SaveFile
     ubyte[] commandLog; // commands bytecode
 }
 
-string SAVE_MAGIC_STRING = "ATSave";
+immutable string SAVE_MAGIC_STRING = "ATSave";
 
 // Holds the game state and how we got there.
 // 
