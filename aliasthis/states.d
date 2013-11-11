@@ -181,7 +181,7 @@ public:
         else if (key.sym == SDLK_RETURN)
         {
             if (_menu.index() == 0) // new game
-                return new StatePlay(_console, unpredictableSeed);
+                return new StateIntro(_console, unpredictableSeed);
             else if (_menu.index() == 1) // load game
             {
             }
@@ -196,6 +196,64 @@ public:
 
         return this; // default -> do nothing
     }
+}
+
+class StateIntro : State
+{
+public:
+
+    this(Console console, uint seed)
+    {
+        super(console);       
+        _seed = seed;
+        _splash = console.loadImage("data/intro.png");
+    }    
+
+    ~this()
+    {
+        close();
+    }
+
+    override void close()
+    {
+        if (_splash !is null)
+        {
+            _splash.close();
+            _splash = null;
+        }
+    }
+
+    override void draw(double dt)
+    {       
+   
+        void getCharStyle(int x, int y, out int charIndex, out vec4ub fgColor)
+        {
+            Xorshift rng;
+            rng.seed(x + y * 80);
+            int ij = uniform(0, 16, rng);
+            int ci = (9 * 16 + 14);
+            if (ij < 7) 
+                ci = (6 * 16 + 14);
+            if (ij < 2)
+                ci = (6 * 16 + 12);
+
+            fgColor = rgba(0, 0, 0, 235);
+            charIndex = (x < 16 || x >= 74) ? ci : 0;         
+        }
+
+        _console.putImage(0, 0, _splash, &getCharStyle);
+    }
+
+    override State handleKeypress(SDL_Keysym key)
+    {   
+        // quit without confirmation
+        if (key.sym == SDLK_ESCAPE)
+            return new StateMainMenu(_console);
+        return new StatePlay(_console, _seed);
+    }
+private:
+    uint _seed;
+    SDL2Surface _splash;
 }
 
 class StatePlay : State
