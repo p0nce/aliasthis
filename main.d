@@ -1,6 +1,7 @@
 import std.random,
        std.typecons,
        std.stdio,
+       std.file,
        std.path,
        std.getopt;
 
@@ -16,8 +17,7 @@ void main(string[] args)
     Log log = new ConsoleLog();
     try
     {
-        string absolutePathOfExecutable = absolutePath(args[0], getcwd()); 
-        string gameDir = dirName(absolutePathOfExecutable);
+        string gameDir = dirName(thisExePath());
        
         auto sdl2 = scoped!SDL2(log);
         auto console = scoped!Console(sdl2, log, gameDir, CONSOLE_WIDTH, CONSOLE_HEIGHT);
