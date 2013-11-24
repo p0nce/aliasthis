@@ -8,6 +8,7 @@ import gfm.sdl2.all,
 
 import aliasthis.utils,
        aliasthis.console,
+       aliasthis.lang,
        aliasthis.states;
 
 immutable int POLL_DELAY = 35;
@@ -21,7 +22,7 @@ public:
     {
         _sdl2 = sdl2;
         _console = console;    
-        _state = new StateMainMenu(console);
+        _state = new StateMainMenu(console, new LangEnglish);
         _frameCounter = new FrameCounter(sdl2);
     }
 

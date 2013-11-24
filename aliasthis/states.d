@@ -9,6 +9,7 @@ import aliasthis.console,
        aliasthis.utils,
        aliasthis.config,
        aliasthis.command,
+       aliasthis.lang.lang,
        aliasthis.game;
 
 
@@ -16,9 +17,10 @@ import aliasthis.console,
 class State
 {
 public:
-    this(Console console)
+    this(Console console, Lang lang)
     {
         _console = console;
+        _lang = lang;
     }
 
     void close()
@@ -38,6 +40,7 @@ public:
 
 protected:
     Console _console;
+    Lang _lang;
 }
 
 class Menu
@@ -114,9 +117,9 @@ private:
 
 public:
 
-    this(Console console)
+    this(Console console, Lang lang)
     {
-        super(console);
+        super(console, lang);
         _menu = new Menu( [
             "New game",
             "Load game",
@@ -181,7 +184,7 @@ public:
         else if (key.sym == SDLK_RETURN)
         {
             if (_menu.index() == 0) // new game
-                return new StateIntro(_console, unpredictableSeed);
+                return new StateIntro(_console, _lang, unpredictableSeed);
             else if (_menu.index() == 1) // load game
             {
             }
@@ -202,10 +205,11 @@ class StateIntro : State
 {
 public:
 
-    this(Console console, uint seed)
+    this(Console console, Lang lang, uint seed)
     {
-        super(console);       
+        super(console, lang);       
         _seed = seed;
+        _slide = 0;
         _splash = console.loadImage("data/intro.png");
     }    
 
@@ -242,36 +246,49 @@ public:
         }
 
         _console.putImage(0, 0, _splash, &getCharStyle);
+
+        _console.setForegroundColor(rgba(255, 182, 172, 255));
+        _console.setBackgroundColor(rgba(0, 0, 0, 0));
+
+        _console.putFormattedText(38, 2, 40, 140, "Aeneid Book II");
+
+        string textIntro = _lang.getIntroText()[_slide];
+
+        _console.putFormattedText(20, 11, 51, 140, textIntro);
     }
 
     override State handleKeypress(SDL_Keysym key)
     {   
-        // quit without confirmation
         if (key.sym == SDLK_ESCAPE)
-            return new StateMainMenu(_console);
-        return new StatePlay(_console, _seed);
+            return new StateMainMenu(_console, _lang);
+
+        _slide++;
+        if (_slide == 3)
+            return new StatePlay(_console, _lang, _seed);
+        else
+            return this;
     }
+
 private:
     uint _seed;
     SDL2Surface _splash;
+    int _slide;
 }
 
 class StatePlay : State
 {
 public:
 
-    this(Console console, uint initialSeed)
+    this(Console console, Lang lang, uint initialSeed)
     {
-        super(console);
+        super(console, lang);
         _game = new Game(initialSeed);
-        _game.message("You entered the crypt of Aliasthis");
+        _game.message("You entered the crypt of Aliasthis.");
     }    
 
     override void draw(double dt)
     {
         _game.draw(_console, dt);
-
-        // TODO hud
     }
 
     override State handleKeypress(SDL_Keysym key)
@@ -279,7 +296,7 @@ public:
         Command[] commands;
         if (key.sym == SDLK_ESCAPE)
         {
-            return new StateMainMenu(_console);
+            return new StateMainMenu(_console, _lang);
         }
         else if (key.sym == SDLK_LEFT || key.sym == SDLK_KP_4)
         {

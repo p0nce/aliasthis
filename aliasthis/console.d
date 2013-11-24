@@ -159,6 +159,63 @@ class Console
                 putChar(cx + i, cy, character(ch));
         }
 
+        // format text into a rectangle
+        void putFormattedText(int cx, int cy, int width, int height, string text)
+        {
+            int x = 0;
+            int y = 0;
+            dchar[] fifo;
+
+            void flush()
+            {
+                foreach (dchar ch; fifo)
+                {
+                    if (ch != '\n')
+                    {
+                        // crop
+                        if (cx < width && cy < height)
+                            putChar(cx + x, cy + y, character(ch)); // draw char
+                        x++;
+                    }
+                }
+                fifo.length = 0;
+            }
+
+            foreach (int i, dchar ch; text)
+            {
+                if (ch == ' ')
+                {
+                    if (x + fifo.length < width)
+                    {
+                        flush();
+                        fifo ~= ch;
+                    }
+                    else
+                    {
+                        x = 0;
+                        y += 1;
+                        if (fifo.length > 0 && fifo[0] == ' ')
+                            fifo = fifo[1..$];
+                        flush();
+                        fifo ~= ch;
+                    }
+                }
+                else if (ch == '\n')
+                {
+                    if (x + fifo.length < width)
+                        flush();
+                    x = 0;
+                    y += 1;
+                    flush();
+                }
+                else
+                {
+                    fifo ~= ch;
+                }
+            }
+            flush();
+        }
+
         void putImage(int cx, int cy, SDL2Surface surface, void delegate(int x, int y, out int charIndex, out vec4ub fgColor) getCharStyle)
         {
             surface.lock();
