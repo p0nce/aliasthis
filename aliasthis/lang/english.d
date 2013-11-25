@@ -30,8 +30,11 @@ class LangEnglish : Lang
             "polluting with blood the flames that he himself had sanctified.\n\n"
             "Those fifty chambers, the promise of so many offspring, the doorposts, "
             "rich with spoils of barbarian gold, crash down: the Greeks possess what the fire spares.\n"
-
-
         ];
+    }
+
+    override string getEntryText()
+    {
+        return "You entered the king's palace. Kill Priam.";
     }
 }

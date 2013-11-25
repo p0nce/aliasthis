@@ -13,8 +13,7 @@
         "gfm:math": "~master",
         "gfm:image": "~master",
         "gfm:sdl2": "~master",
-        "gfm:net": "~master",
-        "msgpack-d": "~master"
+        "msgpack-d": "~master",
     }
 }
 
