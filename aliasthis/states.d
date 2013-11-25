@@ -255,7 +255,7 @@ public:
         _console.setForegroundColor(rgba(255, 182, 172, 255));
         _console.setBackgroundColor(rgba(0, 0, 0, 0));
 
-        _console.putFormattedText(38, 2, 40, 140, _lang.getAeneid());
+        _console.putFormattedText(37, 2, 40, 140, _lang.getAeneid());
 
         string textIntro = _lang.getIntroText()[_slide];
 
@@ -267,7 +267,13 @@ public:
         if (key.sym == SDLK_ESCAPE)
             return new StateMainMenu(_console, _lang);
 
-        _slide++;
+        if (key.sym == SDLK_LEFT)
+            _slide--;
+        else
+            _slide++;
+
+        if (_slide == -1)
+            return new StateMainMenu(_console, _lang);
         if (_slide == 3)
             return new StatePlay(_console, _lang, _seed);
         else
