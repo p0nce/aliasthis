@@ -22,7 +22,7 @@ public:
     {
         _sdl2 = sdl2;
         _console = console;    
-        _state = new StateMainMenu(console, new LangEnglish);
+        _state = new StateMainMenu(console, new LangFrench);
         _frameCounter = new FrameCounter(sdl2);
     }
 

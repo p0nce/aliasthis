@@ -43,4 +43,16 @@ class LangFrench : Lang
     {
         return "Vous entrez dans le palais du roi. Tuez Priam.";
     }
+
+    override string[] mainMenuItems()
+    {
+        return
+        [
+            "Nouveau jeu",
+            "Charger jeu",
+            "Voir replay",
+            "Changer langue",
+            "Quitter"
+        ];
+    }
 }

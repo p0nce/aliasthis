@@ -37,4 +37,16 @@ class LangEnglish : Lang
     {
         return "You entered the king's palace. Kill Priam.";
     }
+
+    override string[] mainMenuItems()
+    {
+        return
+        [
+            "New game",
+            "Load game",
+            "View recording",
+            "Change language",
+            "Quit"
+        ];
+    }
 }

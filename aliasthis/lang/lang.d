@@ -7,4 +7,6 @@ abstract class Lang
     string getEntryText();
 
     string[] getIntroText();
+
+    string[] mainMenuItems();
 }

@@ -9,7 +9,7 @@ import aliasthis.console,
        aliasthis.utils,
        aliasthis.config,
        aliasthis.command,
-       aliasthis.lang.lang,
+       aliasthis.lang,
        aliasthis.game;
 
 
@@ -120,12 +120,7 @@ public:
     this(Console console, Lang lang)
     {
         super(console, lang);
-        _menu = new Menu( [
-            "New game",
-            "Load game",
-            "View recording",
-            "Quit"
-        ] );
+        _menu = new Menu( lang.mainMenuItems() );
 
         _splash = console.loadImage("data/mainmenu.png");
     }   
@@ -191,7 +186,17 @@ public:
             else if (_menu.index() == 2) // view recording
             {
             }
-            else if (_menu.index() == 3) // quit
+            else if (_menu.index() == 3) // change language
+            {
+                Lang lang;
+                if (cast(LangEnglish)_lang)
+                    lang = new LangFrench;
+                else if (cast(LangFrench)_lang)
+                    lang = new LangEnglish;
+
+                return new StateMainMenu(_console, lang);
+            }
+            else if (_menu.index() == 4) // quit
             {
                 return null;
             }
