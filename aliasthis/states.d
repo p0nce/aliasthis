@@ -255,7 +255,7 @@ public:
         _console.setForegroundColor(rgba(255, 182, 172, 255));
         _console.setBackgroundColor(rgba(0, 0, 0, 0));
 
-        _console.putFormattedText(38, 2, 40, 140, "Aeneid Book II");
+        _console.putFormattedText(38, 2, 40, 140, _lang.getAeneid());
 
         string textIntro = _lang.getIntroText()[_slide];
 

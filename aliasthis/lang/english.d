@@ -49,4 +49,9 @@ class LangEnglish : Lang
             "Quit"
         ];
     }
+
+    override string getAeneid()
+    {
+      return "Aeneid Book II";
+    }
 }

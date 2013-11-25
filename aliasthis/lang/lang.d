@@ -9,4 +9,6 @@ abstract class Lang
     string[] getIntroText();
 
     string[] mainMenuItems();
+
+    string getAeneid();
 }
