@@ -9,9 +9,9 @@ class LangFrench : Lang
         return [
 
             // 0
-            "L’intérieur n’est que gémissements, tumulte et douleur. "
+            "L'intérieur n'est que gémissements, tumulte et douleur. "
             "Toutes les cours hurlent du cri lamentable des femmes : "
-            "la clameur va frapper les étoiles d’or.\n"
+            "la clameur va frapper les étoiles d'or.\n"
             "Les mères épouvantées errent ça et là dans les immenses galeries ; elles embrassent, "
             "elles étreignent les portes, elles y collent leurs lèvres.\n\n"
 
@@ -29,13 +29,13 @@ class LangFrench : Lang
             "amoncelées et qu’il entraîne par toute la campagne les grands troupeaux et leurs étables.",
 
             // 2
-            "J’ai vu  de mes yeux, ivre de carnage, "
-           "Néoptolème et sur le seuil les deux Atrides.\n\n"
-           "J’ai vu Hécube et ses cent brus, et au pied des autels Priam dont le sang profanait les "
-            "feux sacrés qu’il avait lui-même allumés.\n\n"
+            "J'ai vu de mes yeux, ivre de carnage, "
+            "Néoptolème et sur le seuil les deux Atrides.\n\n"
+            "J'ai vu Hécube et ses cent brus, et au pied des autels Priam dont le sang profanait les "
+            "feux sacrés qu'il avait lui-même allumés.\n\n"
             "Ces cinquante chambres nuptiales, vaste espoir de postérité, leurs portes "
             "superbement chargées des dépouilles et de l’or des Barbares, "
-            "tout s’est effondré. Les Grecs sont partout où n’est pas la\nflamme."
+            "tout s'est effondré. Les Grecs sont partout où n'est pas la\nflamme."
         ];
     }
 
