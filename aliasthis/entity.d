@@ -2,7 +2,7 @@ module aliasthis.entity;
 
 import std.math;
 
-import gfm.math.all;
+import gfm.math;
 
 // basis for players and monsters
 import aliasthis.cell,

@@ -2,8 +2,8 @@ module aliasthis.states;
 
 import std.random; 
 
-import gfm.sdl2.all,
-       gfm.math.all;
+import gfm.sdl2,
+       gfm.math;
 
 import aliasthis.console,
        aliasthis.utils,

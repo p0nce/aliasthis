@@ -6,7 +6,7 @@ import std.random,
        std.getopt;
 
 import gfm.core.log,
-       gfm.sdl2.all;
+       gfm.sdl2;
 
 import aliasthis.statemachine,
        aliasthis.config,

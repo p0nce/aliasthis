@@ -1,6 +1,6 @@
 module aliasthis.grid;
 
-import gfm.math.all;
+import gfm.math;
 
 import aliasthis.config,
        aliasthis.utils,

@@ -3,8 +3,8 @@ module aliasthis.statemachine;
 import std.random,
        std.typecons;
 
-import gfm.sdl2.all,
-       gfm.math.all;
+import gfm.sdl2,
+       gfm.math;
 
 import aliasthis.utils,
        aliasthis.console,

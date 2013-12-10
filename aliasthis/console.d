@@ -3,9 +3,9 @@ module aliasthis.console;
 import std.typecons,
        std.path;
 
-import gfm.core.all,
-       gfm.sdl2.all,
-       gfm.math.all;
+import gfm.core,
+       gfm.sdl2,
+       gfm.math;
 
 public import aliasthis.chartable,
               aliasthis.utils;
