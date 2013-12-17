@@ -9,7 +9,7 @@ class LangFrench : Lang
         return [
 
             // 0
-            "  L'intérieur n'est que gémissements, tumulte et douleur. "
+            "  L'intérieur du palais n'est que gémissements, tumulte et douleur."
             "Toutes les cours hurlent du cri lamentable des femmes : "
             "la clameur va frapper les étoiles d'or.\n\n"
 
