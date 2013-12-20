@@ -9,12 +9,12 @@ class LangFrench : Lang
         return [
 
             // 0
-            "  L'intérieur du palais n'est que gémissements, tumulte et douleur."
+            "  L'intérieur du palais n'est que gémissements, tumulte et douleur. "
             "Toutes les cours hurlent du cri lamentable des femmes : "
-            "la clameur va frapper les étoiles d'or.\n\n"
+            "la clameur va frapper les astres d'or.\n\n"
 
             "  Les mères épouvantées errent ça et là dans les immenses galeries ; elles embrassent, "
-            "elles étreignent les portes, elles y collent leurs lèvres. \n\n"
+            "étreignent les portes, elles y collent leurs lèvres. \n\n"
 
             "  Pyrrhus, aussi fougueux que son père, presse l'attaque : ni barres de fer "
             "ni gardiens ne peuvent soutenir l'assaut. Les coups redoublés du "
@@ -36,7 +36,7 @@ class LangFrench : Lang
             "feux sacrés qu'il avait lui-même allumés.\n\n"
             "  Ces cinquante chambres nuptiales, vaste espoir de postérité, leurs portes "
             "superbement chargées des dépouilles et de l'or des Barbares, "
-            "tout s'est effondré. Les Grecs sont partout où n'est pas la\nflamme. "
+            "tout s'est effondré. \n\n Les Grecs sont partout où n'est pas la flamme. "
         ];
     }
 

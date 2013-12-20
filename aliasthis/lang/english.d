@@ -7,8 +7,8 @@ class LangEnglish : Lang
     override string[] getIntroText()
     {
         return [
-            "  But, inside the palace, groans mingle with sad confusion, "
-            "and, deep within, the hollow halls howl "
+            "  Inside the palace, groans mingle with sad confusion, and, "
+            "deep within, the hollow halls howl "
             "with women's cries: the clamour strikes the golden stars. \n\n"
             "  Trembling mothers wander the vast building, clasping "
             "the doorposts, and placing kisses on them. \n\n"
