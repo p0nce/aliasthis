@@ -66,11 +66,6 @@ class Console
             _renderer.close();
             _font.close();
             _window.close();
-
-            static if (USE_SDL_IMAGE)
-            {
-                _sdlImage.close();
-            }
         }
 
         @property width()
@@ -241,35 +236,24 @@ class Console
             }
         }
 
-        static if (USE_SDL_IMAGE)
-        {
-            SDL2Surface loadImage(string relPath)
-            {
-                string fullPath = buildNormalizedPath(_gameDir, relPath);
-                return _sdlImage.load(fullPath);
-            }
-        }
-        else
+        SDL2Surface loadImage(string relPath)
         {
             import gfm.image.stb_image;
             import std.file;
 
-            SDL2Surface loadImage(string relPath)
-            {
-                string fullPath = buildNormalizedPath(_gameDir, relPath);
-                void[] data = std.file.read(fullPath);
-                int width, height, components;
-                ubyte* decoded = stbi_load_from_memory(data, width, height, components, 4);
-                scope(exit) stbi_image_free(decoded);
+            string fullPath = buildNormalizedPath(_gameDir, relPath);
+            void[] data = std.file.read(fullPath);
+            int width, height, components;
+            ubyte* decoded = stbi_load_from_memory(data, width, height, components, 4);
+            scope(exit) stbi_image_free(decoded);
 
-                // stb_image guarantees that ouput will always have 4 components when asked
-                SDL2Surface loaded = new SDL2Surface(_sdl2, decoded, width, height, 32, 4 * width,
-                                                     0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
+            // stb_image guarantees that ouput will always have 4 components when asked
+            SDL2Surface loaded = new SDL2Surface(_sdl2, decoded, width, height, 32, 4 * width,
+                                                 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
 
-                SDL2Surface cloned = loaded.clone(); // to gain pixel ownership
-                loaded.close(); // scoped! strangely didn't worked out
-                return cloned;
-            }
+            SDL2Surface cloned = loaded.clone(); // to gain pixel ownership
+            loaded.close(); // scoped! strangely didn't worked out
+            return cloned;
         }
 
         void flush()
