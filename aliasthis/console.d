@@ -262,20 +262,13 @@ class Console
                 ubyte* decoded = stbi_load_from_memory(data, width, height, components, 4);
                 scope(exit) stbi_image_free(decoded);
 
-                assert(components == 4);
+                // stb_image guarantees that ouput will always have 4 components when asked
+                SDL2Surface loaded = new SDL2Surface(_sdl2, decoded, width, height, 32, 4 * width,
+                                                     0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
 
-                SDL2Surface surface = new SDL2Surface(_sdl2, 
-                                                         decoded, 
-                                                         width, 
-                                                         height, 
-                                                         32, 
-                                                         4 * width,
-                                                         0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
-
-                SDL2Surface other = surface.clone();
-                surface.close();
-
-                return other;
+                SDL2Surface cloned = loaded.clone(); // to gain pixel ownership
+                loaded.close(); // scoped! strangely didn't worked out
+                return cloned;
             }
         }
 
