@@ -109,11 +109,60 @@ private:
     int _maxLength;
 }
 
+
+class ConsoleFire
+{
+private:
+    vec4f[] _color;
+    int _width;
+    int _height;
+    SimplexNoise!Random _noise;
+    double _time;
+
+public:
+    this (int width, int height)
+    {
+        _noise = new SimplexNoise!Random(rndGen());
+        _time = 0;
+        _width = width;
+        _height = height;
+        _color.length = _width * _height;
+        _color[] = vec4f(0);
+    }
+
+    void progress(double dt)
+    {
+        _time += dt;
+        while( _time > 0.1)
+        {
+            progress();
+            _time -= 0.1;
+        }
+    }
+
+    vec4f get(int i, int j)
+    {
+        return _color[i + j * _width];
+    }
+
+    void progress()
+    {
+        for (int j = 0; j < _height; ++j)
+        {
+            for (int i = 0; i < _width; ++i)
+            {
+
+            }
+        }
+    }
+}
+
 class StateMainMenu : State
 {
 private:
     Menu _menu;
     SDL2Surface _splash;
+    ConsoleFire _fire;
 
 public:
 
@@ -123,6 +172,8 @@ public:
         _menu = new Menu( lang.mainMenuItems() );
 
         _splash = console.loadImage("data/mainmenu.png");
+        
+        _fire = new ConsoleFire(59, 30);
     }   
 
     ~this()
@@ -165,6 +216,17 @@ public:
 
         
         _menu.draw(55, 19, _console);
+       /* _fire.progress(dt);
+
+        // draw fire
+        for (int y = 1; y < 31; ++y)
+        {
+            for (int x = 32; x < 91; ++x)
+            {   
+              //  _console.setBackgroundColor(_fire.get(x - 32, y - 1));
+                _console.putChar(x, y, 0);
+            }
+        }*/
     }
 
     override State handleKeypress(SDL_Keysym key)
@@ -255,11 +317,11 @@ public:
         _console.setForegroundColor(rgba(255, 182, 172, 255));
         _console.setBackgroundColor(rgba(0, 0, 0, 0));
 
-        _console.putFormattedText(37, 2, 40, 140, _lang.getAeneid());
+        _console.putFormattedText(37, 7, 40, 140, _lang.getAeneid());
 
         string textIntro = _lang.getIntroText()[_slide];
 
-        _console.putFormattedText(20, 11, 51, 140, textIntro);
+        _console.putFormattedText(20, 10, 51, 140, textIntro);
     }
 
     override State handleKeypress(SDL_Keysym key)
