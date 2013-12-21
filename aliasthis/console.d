@@ -23,7 +23,7 @@ enum
     BG_OP_KEEP = 1
 }
 
-enum USE_SDL_IMAGE = true;
+enum USE_SDL_IMAGE = false;
 
 class Console
 {
@@ -251,22 +251,31 @@ class Console
         }
         else
         {
-            import arsd.color;
-            import arsd.png;
+            import gfm.image.stb_image;
+            import std.file;
 
             SDL2Surface loadImage(string relPath)
             {
                 string fullPath = buildNormalizedPath(_gameDir, relPath);
-                TrueColorImage img = readPng(fullPath).getAsTrueColorImage();
+                void[] data = std.file.read(fullPath);
+                int width, height, components;
+                ubyte* decoded = stbi_load_from_memory(data, width, height, components, 4);
+                scope(exit) stbi_image_free(decoded);
+
+                assert(components == 4);
+
                 SDL2Surface surface = new SDL2Surface(_sdl2, 
-                                                      img.imageData.bytes.ptr,
-                                                      //img.data.ptr, 
-                                                      img.width(), 
-                                                      img.height(), 
-                                                      32, 
-                                                      img.width(),
-                                                      0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff);
-                return surface;
+                                                         decoded, 
+                                                         width, 
+                                                         height, 
+                                                         32, 
+                                                         4 * width,
+                                                         0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
+
+                SDL2Surface other = surface.clone();
+                surface.close();
+
+                return other;
             }
         }
 
