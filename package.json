@@ -2,8 +2,8 @@
     "name": "aliasthis",
     "targetName": "aliasthis",
     "targetType": "executable",
-    "sourcePath": ".",
-    "importPaths": [ "."],
+    "sourcePath": "source",
+    "importPaths": [ "source"],
     
     "license": "public domain",
     "description": "An unfinished roguelike inspired by brogue.",
