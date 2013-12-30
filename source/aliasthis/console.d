@@ -49,12 +49,21 @@ class Console
 
             SDL_DisableScreenSaver();
 
+            // hide mouse cursor
+            SDL_ShowCursor(SDL_DISABLE);
+
             // TODO: choose the right display
             vec2i initialWindowSize = vec2i(1366, 768);
 
             // get resolution
             _window = new Window(_sdl2, this, initialWindowSize.x, initialWindowSize.y);
             _window.setTitle("Aliasthis v0.1");
+
+            // start fullscreen in release mode
+            debug{} else
+            {
+                toggleFullscreen();
+            }
 
             _renderer = new SDL2Renderer(_window, SDL_RENDERER_SOFTWARE);
             updateFont();
