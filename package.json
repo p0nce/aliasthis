@@ -7,7 +7,7 @@
     
     "license": "public domain",
     "description": "An unfinished roguelike inspired by brogue.",
-    "mainSourceFile": "main.d",
+    "mainSourceFile": "source/main.d",
 
     "dependencies": {
         "gfm:core": "~master",
