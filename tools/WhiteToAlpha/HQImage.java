@@ -10,7 +10,7 @@ import java.util.Random;
 final public class HQImage
 {
 	private float[] data; 
-	private int width, height;
+	public int width, height;
 	static float SUBPIXEL_BIAS_R = -0.50f;
 	static float SUBPIXEL_BIAS_B = +0.50f;
 	void setData(int i, int j, int c, float value)
@@ -271,6 +271,61 @@ final public class HQImage
 		double res = Utils.hermite(fy, l1, l2, l3, l4);		
 		return res;
 	}
+
+	public HQImage blurHorizontal(float[] weights, float divider)
+	{
+		int N = weights.length;
+		assert((N % 2) == 1); // should be odd
+
+		HQImage res = new HQImage(width, height);
+
+		for (int j = 0; j < height; ++j)
+		{
+			for (int i = 0; i < width; ++i)
+			{
+				for (int c = 0; c < 3; ++c)
+				{
+					double sum = 0;
+					for (int k = 0; k < N; ++k)
+						sum += getValue(i + k - N/2, j, c) * weights[k];
+
+					res.setData(i, j, c, (float)(sum / divider));
+				}
+				res.setData(i, j, 3, 1.0f); // TODO why
+			}
+		}
+		return res;
+	}
+
+	public HQImage blurVertical(float[] weights, float divider)
+	{
+		int N = weights.length;
+		assert((N % 2) == 1); // should be odd
+
+		HQImage res = new HQImage(width, height);
+
+		for (int j = 0; j < height; ++j)
+		{
+			for (int i = 0; i < width; ++i)
+			{
+				for (int c = 0; c < 3; ++c)
+				{
+					double sum = 0;
+					for (int k = 0; k < N; ++k)
+						sum += getValue(i, j + k - N/2, c) * weights[k];
+
+					res.setData(i, j, c, (float)(sum / divider));
+				}
+				res.setData(i, j, 3, 1.0f); // TODO why
+			}
+		}
+		return res;
+	}
+
+	public HQImage blur(float[] weights, float divider)
+	{
+		return blurVertical(weights, divider).blurHorizontal(weights, divider);
+	}
 	
 	public HQImage bicubicResize(int newWidth, int newHeight, boolean LCD)
 	{
@@ -342,6 +397,32 @@ final public class HQImage
 			}
 		}	
 		return res;		
+	}
+
+    // Normal composition in GIMP
+	public HQImage compose(HQImage layer)
+	{
+		assert(layer.width == width);
+		assert(layer.height == height);
+		HQImage res = new HQImage(width, height);
+
+		for (int j = 0; j < height; ++j)
+		{
+			for (int i = 0; i < width; ++i)
+			{
+				float src_alpha = layer.getData(i, j, 3);
+				float dst_alpha = getData(i, j, 3);
+				for (int c = 0; c < 3; ++c)
+				{
+					float src = layer.getData(i, j, c);
+					float dst = layer.getData(i, j, c);
+					float r = src * src_alpha + (1 - src_alpha) * dst;
+					res.setData(i, j, c, r);
+				}
+				res.setData(i, j, 3, Math.max(src_alpha, dst_alpha));
+			}
+		}
+		return res;
 	}
 	
 	public double lanczosSample(double x, double y, int channel, int taps)
