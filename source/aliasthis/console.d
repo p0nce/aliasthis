@@ -23,7 +23,7 @@ enum
     BG_OP_KEEP = 1
 }
 
-enum USE_SDL_IMAGE = false;
+enum DEFORM_GLYPHS_TO_FIT = true;
 
 class Console
 {
@@ -39,11 +39,6 @@ class Console
             _width = width;
             _height = height;
             _sdl2 = sdl2;
-
-            static if(USE_SDL_IMAGE)
-            {
-                _sdlImage = new SDLImage(_sdl2, IMG_INIT_PNG);
-            }
 
             _glyphs.length = _width * _height;
 
@@ -275,6 +270,7 @@ class Console
             _fontTexture.setAlphaMod(254); // Work-around: 255 yield nothing, strange!
 
             for (int j = 0; j < _height; ++j)
+            {
                 for (int i = 0; i < _width; ++i)
                 {
                     Glyph g = glyph(i, j);
@@ -291,24 +287,35 @@ class Console
                         k += 1;
                     }
 
-                    int destX0 = _consoleOffsetX + i * _fontWidth;
-                    int destX1 = _consoleOffsetX + k * _fontWidth;
-                    int destY = _consoleOffsetY + j * _fontHeight;
-                    box2i destRect = box2i(destX0, destY, destX1 + _fontWidth, destY + _fontHeight);
+                    int destX0 = _consoleOffsetX + i * _glyphWidth;
+                    int destX1 = _consoleOffsetX + k * _glyphWidth;
+                    int destY = _consoleOffsetY + j * _glyphHeight;
+                    box2i destRect = box2i(destX0, destY, destX1 + _glyphWidth, destY + _glyphHeight);
 
                     i = k;
 
                     _renderer.setColor(g.backgroundColor.x, g.backgroundColor.y, g.backgroundColor.z, 255);
                     _renderer.fillRect(destRect);
                 }
+            }
+
+            int spacex = _glyphWidth - _fontWidth;
+            int spacey = _glyphHeight - _fontHeight;
+            assert(0 <= spacex && spacex <= 2);
+            assert(0 <= spacey && spacey <= 2);
 
             // draw glyphs
             for (int j = 0; j < _height; ++j)
                 for (int i = 0; i < _width; ++i)
                 {
                     Glyph g = glyph(i, j);
-                    int destX = _consoleOffsetX + i * _fontWidth;
-                    int destY = _consoleOffsetY + j * _fontHeight;
+                    int destX = _consoleOffsetX + i * _glyphWidth;
+                    int destY = _consoleOffsetY + j * _glyphHeight;
+                    if (spacex == 2) 
+                        destX += 1;
+                    if (spacey == 2) 
+                        destY += 1;
+
                     box2i destRect = box2i(destX, destY, destX + _fontWidth, destY + _fontHeight);
                     
                     // optimization: skip index 0 (space)
@@ -336,10 +343,6 @@ class Console
     private
     {        
         SDL2 _sdl2;
-        static if (USE_SDL_IMAGE)
-        {
-            SDLImage _sdlImage;
-        }
         Window _window;
         SDL2Surface _font;
         SDL2Renderer _renderer;
@@ -356,6 +359,10 @@ class Console
 
         int _fontWidth;
         int _fontHeight;
+
+        int _glyphWidth;
+        int _glyphHeight; // The glyph can be slightly larger than a font glyph
+
         int _consoleOffsetX;
         int _consoleOffsetY;
 
@@ -388,6 +395,21 @@ class Console
             _fontWidth = fontDim[bestFont][0];
             _fontHeight = fontDim[bestFont][1];
 
+            // extend glyph size by up-to 2 pixels in each direction to better match the screen.
+            _glyphWidth = _fontWidth;
+            _glyphHeight = _fontHeight;
+
+            if (DEFORM_GLYPHS_TO_FIT)
+            {
+                for (int s = 0; s < 2; ++s)
+                {
+                    if (consoleWidth * (_glyphWidth + 1) <= desktopWidth)
+                        _glyphWidth++;
+                    if (consoleHeight * (_glyphHeight + 1) <= desktopHeight)
+                        _glyphHeight++;
+                }
+            }
+
             // initialize custom font
             string fontPath = format("data/fonts/consola_%sx%s.png", _fontWidth, _fontHeight);
             if (_font !is null)
@@ -396,8 +418,8 @@ class Console
             assert(_font.width == _fontWidth * 16);
             assert(_font.height == _fontHeight * 16);
 
-            _consoleOffsetX = (desktopWidth - _fontWidth * consoleWidth) / 2;
-            _consoleOffsetY = (desktopHeight - _fontHeight * consoleHeight) / 2;
+            _consoleOffsetX = (desktopWidth - _glyphWidth * consoleWidth) / 2;
+            _consoleOffsetY = (desktopHeight - _glyphHeight * consoleHeight) / 2;
         }
     }
 }
