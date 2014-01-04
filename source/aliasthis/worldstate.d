@@ -80,10 +80,7 @@ class WorldState
             {
                 int cx = _human.position.x + offset_x;
                 int cy = _human.position.y + offset_y;
-
-                Cell* cell = _grid.cell(vec3i(_human.position.x, _human.position.y, levelToDisplay));
-                CellGraphics gr = cell.graphics;
-                console.setBackgroundColor(vec4ub(mulColor(gr.backgroundColor, 0.95f), cast(ubyte)255));
+                console.setBackgroundColor(rgba(0,0,0,0));
                 console.setForegroundColor(rgb(223, 105, 71));
                 console.putChar(cx, cy, ctCharacter!'Ѭ');
             }
