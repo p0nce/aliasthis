@@ -73,8 +73,8 @@ CellGraphics defaultCellGraphics(CellType type) pure nothrow
     {
         case CellType.STAIR_UP:      return CellGraphics(ctCharacter!'<', rgba(170, 170, 40, 255), rgb(30, 30, 40));
         case CellType.STAIR_DOWN:    return CellGraphics(ctCharacter!'>', rgba(170, 170, 40, 255), rgb(30, 30, 40));
-        case CellType.SHALLOW_WATER: return CellGraphics(ctCharacter!'~', rgba(60, 70, 116, 160), rgb(101, 116, 193));
-        case CellType.DEEP_WATER:    return CellGraphics(ctCharacter!'~', rgba(31, 39, 90, 160), rgb(63, 78, 157));
+        case CellType.SHALLOW_WATER: return CellGraphics(ctCharacter!'~', rgba(170, 170, 200, 150), rgb(101, 116, 193));
+        case CellType.DEEP_WATER:    return CellGraphics(ctCharacter!'~', rgba(120, 140, 200, 150), rgb(63, 78, 157));
         case CellType.LAVA:          return CellGraphics(ctCharacter!'~', rgba(205, 140, 0, 160), rgb(148, 82, 0));
         case CellType.HOLE:          return CellGraphics(ctCharacter!' ', rgba(47, 47, 87, 255), rgb(0, 0, 0));
         case CellType.WALL:          return CellGraphics(/* dummy */ctCharacter!'▪', rgba(128, 128, 138, 255), /* dummy */rgb(20, 32, 64));
@@ -100,7 +100,7 @@ CellVariability cellVariability(CellType type) pure nothrow
         case CellType.LAVA:          return CellVariability(0.018f * 3.0f, 0.009f * 3.0f);
         case CellType.HOLE:          return CellVariability(0.018f, 0.009f);
         case CellType.WALL:          return CellVariability(0.018f, 0.009f);
-        case CellType.FLOOR:         return CellVariability(0.018f * 0.4f, 0.009f * 0.4f);
+        case CellType.FLOOR:         return CellVariability(0.009f * 0.25f, 0.009f * 0.25f);
         case CellType.DOOR:          return CellVariability(0.018f, 0.009f);
     }
 }
