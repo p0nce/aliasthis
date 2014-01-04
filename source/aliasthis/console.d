@@ -154,8 +154,12 @@ class Console
 
         void putText(int cx, int cy, string text)
         {
-            foreach (int i, dchar ch; text)
+            int i = 0;
+            foreach (dchar ch; text)
+            {
                 putChar(cx + i, cy, character(ch));
+                i += 1;
+            }
         }
 
         // format text into a rectangle
