@@ -101,7 +101,9 @@ public:
 
             for (int x = 0; x < GRID_WIDTH; ++x)
                 console.putChar(x, console.height - 3 + y, 0);
-            console.putText(1, console.height - 3 + y, _messageLog[y]);
+
+            string msg = _messageLog[y];
+            console.putText(1, console.height - 3 + y, msg);
         }
     }
 

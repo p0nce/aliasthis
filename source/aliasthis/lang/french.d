@@ -42,7 +42,7 @@ class LangFrench : Lang
 
     override string getEntryText()
     {
-        return "Vous entrez dans le palais du roi. Tuez Priam.";
+        return "Vous êtes Pyrrhus. Tuez le roi Priam.";
     }
 
     override string[] mainMenuItems()

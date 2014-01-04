@@ -36,7 +36,7 @@ class LangEnglish : Lang
 
     override string getEntryText()
     {
-        return "You entered the king's palace. Kill Priam.";
+        return "You are Pyrrhus. Kill King Priam.";
     }
 
     override string[] mainMenuItems()
