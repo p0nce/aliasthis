@@ -16,7 +16,7 @@
             image-rendering: -moz-crisp-edges;
         }
 
-        </style>        
+        </style>
 
 
     </head>
@@ -28,7 +28,7 @@
         <canvas id="c4"></canvas>
         <canvas id="c5"></canvas>
         <canvas id="c6"></canvas>
-        
+
         <script>
 
             var body = document.body;
@@ -53,17 +53,17 @@
 
                 canvas.width = WX;
                 canvas.height = WY;
-                
-                
-                
+
+
+
 
                 // 21x33, (3, -7)
-                
+
                 context.fillStyle = '#000';
-                context.fillRect(0, 0, WX, WY);            
+                context.fillRect(0, 0, WX, WY);
 
                 var codes = [
-                 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 
+                 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
                  48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63,
                  64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
                  80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95,
@@ -81,37 +81,37 @@
                 0xF0,0xF1,0xF2,0xF3,0xF4,0xF5,0xF6,0xF7,0xF8,0xF9,0xFA,0xFB,0xFC,0xFD,0xFE,0xFF,
                 ];
 
-                
-                
-                for (var i = 0; i < 16; ++i)        
+
+
+                for (var i = 0; i < 16; ++i)
                 {
-                    for (var j = 0; j < 16; ++j)        
+                    for (var j = 0; j < 16; ++j)
                     {
                         var code = codes[j * 16 + i];
 
 /*                      if (code === 64)
                         {
                             context.font = context.font = fontPt + "pt Inconsolata-g";
-                        } 
+                        }
                         else*/
                         {
                             context.font = fontPt + "pt Aliasthis";
                         }
 
-                        var s = String.fromCharCode(codes[j * 16 + i]); 
+                        var s = String.fromCharCode(codes[j * 16 + i]);
                     /*    if ((i ^ j) & 1)
                         {
                             context.fillStyle = '#400';
                             context.fillRect(i * fw, j * fh, fw, fh);
                         }*/
-                        
+
                         context.fillStyle = '#fff';
-                        
+
                         context.fillText(s, i * fw + dx, j * fh + fh - 1 + dy);
                     }
                 }
             }
-         
+
         </script>
     </body>
 </html>
