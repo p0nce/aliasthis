@@ -5,22 +5,23 @@ import std.random,
        std.path,
        std.getopt;
 
-import gfm.core.log,
-       gfm.sdl2;
+import gfm.sdl2;
 
 import aliasthis.statemachine,
        aliasthis.config,
        aliasthis.console;
 
+import std.logger;
+
 void main(string[] args)
 {    
-    Log log = new ConsoleLog();
+    Logger logger = new StdIOLogger();
     try
     {
         string gameDir = dirName(thisExePath());
        
-        auto sdl2 = scoped!SDL2(log);
-        auto console = scoped!Console(sdl2, log, gameDir, CONSOLE_WIDTH, CONSOLE_HEIGHT);
+        auto sdl2 = scoped!SDL2(logger);
+        auto console = scoped!Console(sdl2, logger, gameDir, CONSOLE_WIDTH, CONSOLE_HEIGHT);
         auto stateMachine = scoped!StateMachine(sdl2, gameDir, console);
         stateMachine.mainLoop();
     }

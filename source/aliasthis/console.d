@@ -3,8 +3,9 @@ module aliasthis.console;
 import std.typecons,
        std.path;
 
-import gfm.core,
-       gfm.sdl2,
+import std.logger;
+
+import gfm.sdl2,
        gfm.math;
 
 public import aliasthis.chartable,
@@ -29,7 +30,7 @@ class Console
 {
     public
     {
-        this(SDL2 sdl2, Log log, string gameDir, int width, int height)
+        this(SDL2 sdl2, Logger logger, string gameDir, int width, int height)
         {
             _fontTexture = null;
             _font = null;
