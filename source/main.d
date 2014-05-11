@@ -11,11 +11,12 @@ import aliasthis.statemachine,
        aliasthis.config,
        aliasthis.console;
 
+import gfm.core.log;
 import std.logger;
 
 void main(string[] args)
 {    
-    Logger logger = new StdIOLogger();
+    Logger logger = new ConsoleLogger();
     try
     {
         string gameDir = dirName(thisExePath());
