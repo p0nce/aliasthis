@@ -2,17 +2,18 @@ Aliasthis
 =========
 
 A roguelike written in the D programming language. Also is an example game.
+Contains some useful tools for bitmap font generation.
 
 ![Game Screenshot](http://i.imgur.com/JQJ9CYo.jpg)
 
-Current status: very alpha.
+Current status: there is basically no game beyond the menu and introduction.
 
 How to build
 ============
 
-- First install dub: https://github.com/rejectedsoftware/dub
+- First install dub: http://code.dlang.org/download
 
-- Then type dub --combined to build
+- Then type `dub` to build
 
 - You will need SDL 2.0 binaries to be able to run aliasthis: http://www.libsdl.org/
 
