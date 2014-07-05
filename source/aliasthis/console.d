@@ -105,7 +105,7 @@ class Console
 
         bool isClosed()
         {
-            return _sdl2.wasQuitResquested();
+            return _sdl2.wasQuitRequested();
         }
 
         ref glyph(int x, int y)
