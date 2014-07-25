@@ -12,6 +12,7 @@ How to build
 ============
 
 - First install dub: http://code.dlang.org/download
+  **Warning: you need at least DUB 0.9.22-rc1 or later**
 
 - Then type `dub` to build
 
