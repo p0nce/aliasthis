@@ -12,9 +12,8 @@ How to build
 ============
 
 - First install dub: http://code.dlang.org/download
-  **Warning: you need at least DUB 0.9.22-rc1 or later**
-
+  
 - Then type `dub` to build
 
-- You will need SDL 2.0 binaries to be able to run aliasthis: http://www.libsdl.org/
+- You will need SDL 2.0+ binaries to be able to run aliasthis: http://www.libsdl.org/
 
