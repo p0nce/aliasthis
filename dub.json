@@ -14,7 +14,7 @@
         "gfm:math": "==1.1.4",
         "gfm:image": "==1.1.4",
         "gfm:sdl2": "==1.1.4",
-        "msgpack-d": "~master"
+        "msgpack-d": "==0.9.1"
     }
 }
 
