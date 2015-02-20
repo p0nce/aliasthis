@@ -1,6 +1,7 @@
 module aliasthis.states;
 
-import std.random; 
+import std.random;
+import aliasthis.simplexnoise;
 
 import gfm.sdl2,
        gfm.math;

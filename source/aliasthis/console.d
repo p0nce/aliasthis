@@ -3,7 +3,7 @@ module aliasthis.console;
 import std.typecons,
        std.path;
 
-import std.logger;
+import std.experimental.logger;
 
 import gfm.sdl2,
        gfm.math;
@@ -429,18 +429,19 @@ class Console
     }
 }
 
-class Window : SDL2Window
+final class Window
 {
     public
     {
         this(SDL2 sdl2, Console console, int width, int height)
         {
-            super(sdl2, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+            _window = new SDL2Window(sdl2, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                   width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS);
             _closed = false;
             _console = console;
         }
 
+        /*
         override void onResized(int width, int height)
         {
             _console.updateFont();
@@ -450,11 +451,12 @@ class Window : SDL2Window
         override void onClose()
         {
             _closed = true;
-        }
+        }*/
     }
 
     private
-    {     
+    {
+        SDL2Window _window;
         Console _console;
         bool _closed;
     }

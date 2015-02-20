@@ -23,7 +23,6 @@ public:
         _sdl2 = sdl2;
         _console = console;    
         _state = new StateMainMenu(console, new LangFrench);
-        _frameCounter = new FrameCounter(sdl2);
     }
 
     ~this()
@@ -38,6 +37,8 @@ public:
     void mainLoop()
     {
         bool finished = false;        
+
+        uint lastTime = SDL_GetTicks();
 
         while(true)
         {
@@ -93,7 +94,9 @@ public:
             _console.clear();
 
             // draw current state
-            ulong deltaMs = _frameCounter.tickMs();
+            uint now = SDL_GetTicks();
+            ulong deltaMs = now - lastTime;
+            lastTime = now;
             double dt = deltaMs / 1000.0;
             _state.draw(dt);
 
@@ -106,6 +109,5 @@ private:
     SDL2 _sdl2;
     Console _console;
     State _state;
-    FrameCounter _frameCounter;
 }
 

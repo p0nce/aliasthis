@@ -10,10 +10,11 @@
     "mainSourceFile": "source/main.d",
 
     "dependencies": {
-        "gfm:core": "==1.1.4",
-        "gfm:math": "==1.1.4",
-        "gfm:image": "==1.1.4",
-        "gfm:sdl2": "==1.1.4",
+        "gfm:core": "~>2.0",
+        "gfm:math": "~>2.0",
+        "gfm:image": "~>2.0",
+        "gfm:sdl2": "~>2.0",
+        "gfm:logger": "~>2.0",
         "msgpack-d": "==0.9.1"
     }
 }
