@@ -85,7 +85,8 @@ class Console
 
         void updateFont()
         {
-            selectBestFontForDimension(_gameDir, _window.getSize(), _width, _height);
+            vec2i windowSize = vec2i(_window.getSize().x, _window.getSize().y);
+            selectBestFontForDimension(_gameDir, windowSize, _width, _height);
             if (_fontTexture !is null)
                 _fontTexture.close();
 
@@ -99,7 +100,7 @@ class Console
             {
                 _window.maximize();
             }
-            _window.setFullscreen(_isFullscreen);
+            setFullscreen(_isFullscreen);
             updateFont();
         }
 
@@ -232,7 +233,8 @@ class Console
             {
                 for(int x = 0; x < w; ++x)
                 {
-                    vec4ub color = surface.getRGBA(x, y);
+                    SDL2Surface.RGBA rgba = surface.getRGBA(x, y);
+                    vec4ub color = vec4ub(rgba.r, rgba.g, rgba.b, rgba.a);
                     Glyph* g = &glyph(x + cx, y + cy);
 
                     int charIndex;
@@ -300,7 +302,7 @@ class Console
                     i = k;
 
                     _renderer.setColor(g.backgroundColor.x, g.backgroundColor.y, g.backgroundColor.z, 255);
-                    _renderer.fillRect(destRect);
+                    _renderer.fillRect(destRect.min.x, destRect.min.y, destRect.width, destRect.height);
                 }
             }
 
@@ -333,15 +335,17 @@ class Console
                     _fontTexture.setAlphaMod(alpha);
                     box2i fontRect = glyphRect(g.fontIndex);
                     _fontTexture.setColorMod(g.foregroundColor.x, g.foregroundColor.y, g.foregroundColor.z);
-                    _renderer.copy(_fontTexture, fontRect, destRect);
+                    _renderer.copy(_fontTexture, fontRect.toSDLRect, destRect.toSDLRect);
                 }
+
+               
             
             _renderer.present();
         }
 
         final void setFullscreen(bool activated)
         {
-            _window.setFullscreen(activated);
+            _window.setFullscreenSetting(activated ? SDL_WINDOW_FULLSCREEN : 0);
         }
     }
 
@@ -452,6 +456,8 @@ final class Window
         {
             _closed = true;
         }*/
+
+        alias _window this;
     }
 
     private
@@ -461,4 +467,14 @@ final class Window
         bool _closed;
     }
     
+}
+
+ SDL_Rect toSDLRect(box2i b)
+{
+    SDL_Rect r;
+    r.x = b.min.x;
+    r.y = b.min.y;
+    r.w = b.width;
+    r.h = b.height;
+    return r;
 }

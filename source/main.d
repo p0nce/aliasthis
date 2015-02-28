@@ -11,6 +11,7 @@ import aliasthis.statemachine,
        aliasthis.config,
        aliasthis.console;
 
+import std.experimental.logger;
 import gfm.logger;
 
 
