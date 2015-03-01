@@ -21,7 +21,7 @@ public:
     this(SDL2 sdl2, string gameDir, Console console)
     {
         _sdl2 = sdl2;
-        _console = console;    
+        _console = console;
         _state = new StateMainMenu(console, new LangFrench);
     }
 
@@ -36,7 +36,7 @@ public:
 
     void mainLoop()
     {
-        bool finished = false;        
+        bool finished = false;
 
         uint lastTime = SDL_GetTicks();
 
@@ -57,13 +57,30 @@ public:
                     State newState = _state;
                     switch (event.type)
                     {
+                        case SDL_WINDOWEVENT:
+                        {
+                            SDL_WindowEvent* windowEvent = &event.window;
+                            import std.stdio;
+                            switch (windowEvent.event)
+                            {
+                                
+                                case SDL_WINDOWEVENT_RESIZED:
+                                    _console.updateFont();
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                            break;
+                        }
+
                         case SDL_KEYDOWN:
                         {
                             auto key = event.key.keysym;
                             if (key.sym == SDLK_RETURN && ((key.mod & KMOD_ALT) != 0))
                                 _console.toggleFullscreen();
                             else
-                                newState = _state.handleKeypress(key);   
+                                newState = _state.handleKeypress(key);
                             break;
                         }
 

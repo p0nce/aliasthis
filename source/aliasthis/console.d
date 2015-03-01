@@ -1,7 +1,8 @@
 module aliasthis.console;
 
 import std.typecons,
-       std.path;
+       std.path,
+       std.string;
 
 import std.experimental.logger;
 
@@ -441,21 +442,8 @@ final class Window
         {
             _window = new SDL2Window(sdl2, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                   width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS);
-            _closed = false;
             _console = console;
         }
-
-        /*
-        override void onResized(int width, int height)
-        {
-            _console.updateFont();
-            super.onResized(width, height);
-        }
-
-        override void onClose()
-        {
-            _closed = true;
-        }*/
 
         alias _window this;
     }
@@ -464,7 +452,6 @@ final class Window
     {
         SDL2Window _window;
         Console _console;
-        bool _closed;
     }
     
 }

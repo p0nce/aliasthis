@@ -346,17 +346,17 @@ class SimplexNoise(UniformRNG) if (isUniformRNG!UniformRNG)
             return x > 0 ? ix : ix - 1;
         }
 
-        static double dot(immutable int g[3], double x, double y)
+        static double dot(immutable int[3] g, double x, double y)
         {
             return g[0]*x + g[1]*y; 
         }
 
-        static double dot(immutable int g[3], double x, double y, double z) 
+        static double dot(immutable int[3] g, double x, double y, double z) 
         {
             return g[0]*x + g[1]*y + g[2]*z; 
         }
         
-        static double dot(immutable int g[4], double x, double y, double z, double w) 
+        static double dot(immutable int[4] g, double x, double y, double z, double w) 
         {
             return g[0]*x + g[1]*y + g[2]*z + g[3]*w; 
         }

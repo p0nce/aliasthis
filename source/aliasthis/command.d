@@ -47,7 +47,7 @@ struct Command
 
     ubyte[] serialize()
     {
-        ubyte res[] = pack(type);
+        ubyte[] res = pack(type);
         final switch(type)
         {
             case CommandType.MOVE:

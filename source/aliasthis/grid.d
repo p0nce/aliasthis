@@ -110,7 +110,7 @@ class Grid
         Cell[] _cells;
 
         // information about levels
-        LevelInfo _levels[GRID_DEPTH];
+        LevelInfo[GRID_DEPTH] _levels;
 
         Xorshift _localRNG; // for unimportant stuff like color
 

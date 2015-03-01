@@ -67,7 +67,7 @@ vec3ub colorFog(vec3ub color, int levelDifference) pure nothrow
     vec3f beforeFog = hsv2rgb(hsv);
     vec3f fog = vec3f(0.0f,0.0f,0.02f);
 
-    float t = clamp!float(levelDifference / 2.5f, 0.0f, 1.0f);
+    float t = gfm.math.clamp!float(levelDifference / 2.5f, 0.0f, 1.0f);
 
     vec3f foggy = lerp(beforeFog, fog, t);
     return cast(vec3ub)(0.5f + foggy * 255.0f);
@@ -87,8 +87,8 @@ vec3ub perturbColorSV(vec3ub color, float Samount, float Vamount, ref Xorshift r
     hsv.y += randNormal(rng) * Samount;
     hsv.z += randNormal(rng) * Vamount;
 
-    hsv.y = clamp!float(hsv.y, 0, 1);
-    hsv.z = clamp!float(hsv.z, 0, 1);
+    hsv.y = gfm.math.clamp!float(hsv.y, 0, 1);
+    hsv.z = gfm.math.clamp!float(hsv.z, 0, 1);
 
     vec3f rgb = hsv2rgb(hsv);
     return cast(vec3ub)(0.5f + rgb * 255.0f);
