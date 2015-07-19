@@ -15,7 +15,7 @@
         "gfm:image": "~>2.0",
         "gfm:sdl2": "~>2.0",
         "gfm:logger": "~>2.0",
-        "msgpack-d": "==0.9.1"
+        "msgpack-d": "==1.0.0-beta.2"
     }
 }
 

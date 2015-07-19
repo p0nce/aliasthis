@@ -11,6 +11,7 @@ import aliasthis.console,
        aliasthis.revrng,
        aliasthis.change,
        aliasthis.cell,
+       aliasthis.levelgen,
        aliasthis.grid;
 
 // Holds the whole game state
@@ -36,7 +37,12 @@ class WorldState
             auto human = new Human();
             human.position = vec3i(10, 10, GRID_DEPTH - 1);
 
-            return new WorldState(grid, human);
+            auto worldState = new WorldState(grid, human);
+
+            auto levelGen = new LevelGenerator();
+            levelGen.generate(rng, worldState);
+
+            return worldState;
         }
 
         void draw(Console console)

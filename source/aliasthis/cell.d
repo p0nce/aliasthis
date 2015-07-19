@@ -5,15 +5,17 @@ import aliasthis.utils,
 
 enum CellType
 {
-    STAIR_UP,
-    STAIR_DOWN,
-    SHALLOW_WATER,
-    DEEP_WATER,
-    LAVA,
-    HOLE,
-    WALL,
-    FLOOR,
-    DOOR
+    STAIR_UP = '<',
+    STAIR_DOWN = '>',
+    SHALLOW_WATER = '-',
+    DEEP_WATER = '~',
+    LAVA = '%',
+    HOLE = ' ',  
+    WALL = 'X',
+    FLOOR = '.',
+    DOOR = '|',
+    //ANYTHING = '?', // only in prefabs for matching
+    //LINK = '*'
 }
 
 
