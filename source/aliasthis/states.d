@@ -186,7 +186,7 @@ public:
     {
         if (_splash !is null)
         {
-            _splash.close();
+            _splash.destroy();
             _splash = null;
         }
     }
@@ -290,7 +290,7 @@ public:
     {
         if (_splash !is null)
         {
-            _splash.close();
+            _splash.destroy();
             _splash = null;
         }
     }

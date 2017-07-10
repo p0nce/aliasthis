@@ -6,6 +6,8 @@ import msgpack;
 
 import gfm.core.queue;
 
+import containers.cyclicbuffer;
+
 import aliasthis.console,
        aliasthis.command,
        aliasthis.config,
@@ -42,9 +44,8 @@ public:
         _changeLog = [];
         _commandLog = [];
 
-        _messageLog = new RingBuffer!string(NUM_BUFFERED_MESSAGES);
         foreach (i ; 0..NUM_BUFFERED_MESSAGES)
-            _messageLog.pushBack("");
+            _messageLog.insertBack("");
     }    
 
     // restore a game from a save
@@ -82,7 +83,7 @@ public:
     // enqueue a game log message
     void message(string m)
     {
-        _messageLog.pushFront(m);
+        _messageLog.insertFront(m);
     }
 
     void draw(Console console, double dt)
@@ -155,5 +156,5 @@ private:
     WorldState _worldState;
     Change[] _changeLog;
     Command[] _commandLog;
-    RingBuffer!string _messageLog;   
+    CyclicBuffer!string _messageLog;   
 }

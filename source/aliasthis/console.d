@@ -9,6 +9,8 @@ import std.experimental.logger;
 import gfm.sdl2,
        gfm.math;
 
+import dplug.core;
+
 public import aliasthis.chartable,
               aliasthis.utils;
 
@@ -53,7 +55,7 @@ class Console
             vec2i initialWindowSize = vec2i(1366, 768);
 
             // get resolution
-            _window = new Window(_sdl2, this, initialWindowSize.x, initialWindowSize.y);
+            _window = new ConsoleWindow(_sdl2, this, initialWindowSize.x, initialWindowSize.y);
             _window.setTitle("Aliasthis v0.1");
 
             // start fullscreen in release mode
@@ -62,16 +64,16 @@ class Console
                 toggleFullscreen();
             }
 
-            _renderer = new SDL2Renderer(_window, SDL_RENDERER_SOFTWARE);
+            _renderer = new SDL2Renderer(_window.sdlWindow(), SDL_RENDERER_SOFTWARE);
             updateFont();
         }
 
         ~this()
         {
-            _fontTexture.close();
-            _renderer.close();
-            _font.close();
-            _window.close();
+            _fontTexture.destroy();
+            _renderer.destroy();
+            _font.destroy();
+            _window.destroy();
         }
 
         @property width()
@@ -89,7 +91,7 @@ class Console
             vec2i windowSize = vec2i(_window.getSize().x, _window.getSize().y);
             selectBestFontForDimension(_gameDir, windowSize, _width, _height);
             if (_fontTexture !is null)
-                _fontTexture.close();
+                _fontTexture.destroy();
 
             _fontTexture = new SDL2Texture(_renderer, _font);
         }
@@ -250,21 +252,23 @@ class Console
 
         SDL2Surface loadImage(string relPath)
         {
-            import gfm.image.stb_image;
+            import dplug.core;
+            import dplug.graphics;
+            import dplug.graphics.drawex;
             import std.file;
 
             string fullPath = buildNormalizedPath(_gameDir, relPath);
             void[] data = std.file.read(fullPath);
-            int width, height, components;
-            ubyte* decoded = stbi_load_from_memory(data, width, height, components, 4);
-            scope(exit) stbi_image_free(decoded);
+
+            OwnedImage!RGBA image = loadOwnedImage(data);
+            scope(exit) image.destroyFree();
 
             // stb_image guarantees that ouput will always have 4 components when asked
-            SDL2Surface loaded = new SDL2Surface(_sdl2, decoded, width, height, 32, 4 * width,
+            SDL2Surface loaded = new SDL2Surface(_sdl2, image.pixels.ptr, image.w, image.h, 32, 4 * image.w,
                                                  0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
 
             SDL2Surface cloned = loaded.clone(); // to gain pixel ownership
-            loaded.close(); // scoped! strangely didn't worked out
+            loaded.destroy(); 
             return cloned;
         }
 
@@ -346,14 +350,18 @@ class Console
 
         final void setFullscreen(bool activated)
         {
-            _window.setFullscreenSetting(activated ? SDL_WINDOW_FULLSCREEN : 0);
+            _window.setFullscreen(activated ? SDL_WINDOW_FULLSCREEN : 0);
         }
+    }
+
+    protected
+    {
+        ConsoleWindow _window;
     }
 
     private
     {        
-        SDL2 _sdl2;
-        Window _window;
+        SDL2 _sdl2;        
         SDL2Surface _font;
         SDL2Renderer _renderer;
         SDL2Texture _fontTexture;
@@ -423,7 +431,7 @@ class Console
             // initialize custom font
             string fontPath = format("data/fonts/consola_%sx%s.png", _fontWidth, _fontHeight);
             if (_font !is null)
-                _font.close();
+                _font.destroy();
             _font = loadImage(fontPath);
             assert(_font.width == _fontWidth * 16);
             assert(_font.height == _fontHeight * 16);
@@ -434,7 +442,7 @@ class Console
     }
 }
 
-final class Window
+final class ConsoleWindow
 {
     public
     {
@@ -445,7 +453,36 @@ final class Window
             _console = console;
         }
 
-        alias _window this;
+        ~this()
+        {
+            debug ensureNotInGC("ConsoleWindow");
+            _window.destroy();
+        }
+
+        void setTitle(string title)
+        {
+            _window.setTitle(title);
+        }
+
+        SDL_Point getSize()
+        {
+            return _window.getSize();
+        }
+
+        SDL2Window sdlWindow()
+        {
+            return _window;
+        }
+
+        void maximize()
+        {
+            return _window.maximize();
+        }
+
+        void setFullscreen(int fullscreen)
+        {
+            _window.setFullscreenSetting(fullscreen);
+        }
     }
 
     private

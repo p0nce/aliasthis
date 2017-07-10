@@ -1,6 +1,7 @@
 module aliasthis.worldstate;
 
 import std.random;
+import std.math;
 
 import aliasthis.console,
        aliasthis.command,

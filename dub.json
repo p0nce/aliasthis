@@ -10,12 +10,13 @@
     "mainSourceFile": "source/main.d",
 
     "dependencies": {
-        "gfm:core": "~>2.0",
-        "gfm:math": "~>2.0",
-        "gfm:image": "~>2.0",
-        "gfm:sdl2": "~>2.0",
-        "gfm:logger": "~>2.0",
-        "msgpack-d": "==1.0.0-beta.2"
+        "gfm:core": "~>6.0",
+        "gfm:math": "~>6.0",
+        "dplug:graphics": "~>4.0",
+        "gfm:sdl2": "~>6.0",
+        "gfm:logger": "~>6.0",
+        "msgpack-d": "==1.0.0-beta.6",
+        "emsi_containers": "~>0.0"
     }
 }
 
