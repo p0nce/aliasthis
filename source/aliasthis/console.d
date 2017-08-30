@@ -455,7 +455,6 @@ final class ConsoleWindow
 
         ~this()
         {
-            debug ensureNotInGC("ConsoleWindow");
             _window.destroy();
         }
 
